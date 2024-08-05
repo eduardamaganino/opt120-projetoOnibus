@@ -46,14 +46,14 @@ class _LoginPageState extends State<LoginPage> {
         final String token = responseData['token'];
         final int userId = responseData['id'];
 
-        print("funcionou");
+        print("Login bem-sucedido");
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
         );
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('token', token);
-        prefs.setInt('userId', userId as int);
+        prefs.setInt('userId', userId);
       } else if (response.statusCode == 401) {
         showDialog(
           context: context,
@@ -98,98 +98,134 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    double buttonWidth=150.0;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Login',
           style: TextStyle(
-            color: Colors.white,
+            color: Color.fromARGB(255, 0, 0, 0),
           ),
         ),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 236, 127, 165),
+        backgroundColor: const Color(0xFFFFD700),
         leading: const Icon(
           Icons.login,
           color: Colors.white,
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(30.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Email',
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 15,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFFFD700), Color.fromARGB(255, 255, 255, 255)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(30.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              const Icon(
+                Icons.directions_bus,
+                size: 100.0,
+                color: Colors.black,
               ),
-            ),
-            const SizedBox(height: 4),
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(3)),
+              const SizedBox(height: 20),
+              const Text(
+                'Email',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
                 ),
-                contentPadding: EdgeInsets.all(10),
               ),
-            ),
-            const Text(
-              'Senha',
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 15,
-              ),
-            ),
-            const SizedBox(height: 4),
-            TextField(
-              controller: senhaController,
-              obscureText: _obscureText,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(3)),
+              const SizedBox(height: 8),
+              TextField(
+                controller: emailController,
+                style: const TextStyle(color: Colors.black),
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                  ),
+                  contentPadding: EdgeInsets.all(12),
                 ),
-                contentPadding: EdgeInsets.all(10),
-                suffixIcon: GestureDetector(
-                  onTap: _togglePasswordVisibility,
-                  child: Icon(
-                    _obscureText ? Icons.visibility_off : Icons.visibility,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Senha',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: senhaController,
+                style: const TextStyle(color: Colors.black),
+                obscureText: _obscureText,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                  ),
+                  contentPadding: EdgeInsets.all(12),
+                  suffixIcon: GestureDetector(
+                    onTap: _togglePasswordVisibility,
+                    child: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 32.0),
-            ElevatedButton(
-              onPressed: fazerLogin,
-              child: Text(
-                'Entrar',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+              
+              const SizedBox(height: 16.0),
+                Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: buttonWidth,
+                    child: ElevatedButton(
+                      onPressed: fazerLogin,
+                      child: const Text(
+                        'Entrar',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFFD700)),
+                    ),
+                  ),
+                ],
               ),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 214, 106, 142)),
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CreateUserWidget()),
-                );
-              },
-              child: Text(
-                'Criar Conta',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+              const SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: buttonWidth,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => CreateUserWidget()),
+                        );
+                      },
+                      child: const Text(
+                        'Criar Conta',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFFD700)),
+                    ),
+                  ),
+                ],
               ),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 214, 106, 142)),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

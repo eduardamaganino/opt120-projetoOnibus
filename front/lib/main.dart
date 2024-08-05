@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_application_1/user/user-page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/usuario.model.dart';
 import 'package:flutter_application_1/user/user-create.dart';
@@ -17,7 +16,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.amber,
+        textTheme: TextTheme(
+          displayLarge: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold, color: Color(0xFFFFD700)), // Amarelo Ouro
+          bodyLarge: TextStyle(fontSize: 16.0, color: Color(0xFFFFD700)), // Amarelo Ouro
+        ),
+        buttonTheme: ButtonThemeData(
+          buttonColor: Color(0xFFFFC107), // Amarelo Mostarda
+          textTheme: ButtonTextTheme.primary,
+        ),
       ),
       home: LoginPage(),
     );
@@ -50,19 +57,24 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_selectedIndex == 0
-            ? 'Home'
-            : _selectedIndex == 1
-                ? 'Pagina de usuario'
-                : 'Cadastro de nova atividade'),
-        backgroundColor: Colors.pink.shade200,
+        title: Text(
+          _selectedIndex == 0 ? 'Home' : _selectedIndex == 1 ? 'Página de Usuário' : 'Cartão',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Color(0xFFFFD700), // Amarelo Ouro
       ),
-      body: _widgetOptions.elementAt(_selectedIndex),
+      body: Container(
+        padding: EdgeInsets.all(16.0),
+        color: Color(0xFFFFFACD), // Amarelo Claro
+        child: Center(
+          child: _widgetOptions.elementAt(_selectedIndex),
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'User',
+            label: 'Usuário',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -70,12 +82,14 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.credit_card),
-            label: 'Cartao',
+            label: 'Cartão',
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.pink,
+        selectedItemColor: Color(0xFFFFC107), // Amarelo Mostarda
+        unselectedItemColor: Color(0xFFFFD700), // Amarelo Ouro
         onTap: _onItemTapped,
+        backgroundColor: Color(0xFFFFFACD), // Amarelo Claro
       ),
     );
   }

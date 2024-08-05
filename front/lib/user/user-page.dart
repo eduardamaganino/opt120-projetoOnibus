@@ -62,7 +62,7 @@ class _UserPageWidgetState extends State<UserPageWidget> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.pink, // Definindo a cor do título
+                      color: const Color.fromARGB(255, 0, 0, 0), // Definindo a cor do título
                     ),
                   ),
                   SizedBox(height: 10),
@@ -87,7 +87,7 @@ class _UserPageWidgetState extends State<UserPageWidget> {
                     child: Text(
                       'Edit User',
                       style: TextStyle(
-                        color: Colors.pink,
+                        color: const Color.fromARGB(255, 0, 0, 0),
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
