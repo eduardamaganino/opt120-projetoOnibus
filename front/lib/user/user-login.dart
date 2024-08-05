@@ -47,58 +47,51 @@ class _LoginPageState extends State<LoginPage> {
         final int userId = responseData['id'];
 
         print("Login bem-sucedido");
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('token', token);
+        prefs.setInt('userId', userId);
+
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
         );
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('token', token);
-        prefs.setInt('userId', userId);
       } else if (response.statusCode == 401) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Credenciais Inválidas'),
-              content: const Text(
-                  'Por favor, verifique suas credenciais e tente novamente.'),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
+        _showAlertDialog('Credenciais Inválidas',
+            'Por favor, verifique suas credenciais e tente novamente.');
       } else {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Erro'),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
+        _showAlertDialog('Erro',
+            'Ocorreu um erro ao tentar realizar o login. Tente novamente.');
       }
     } catch (e) {
+      _showAlertDialog('Erro',
+          'Não foi possível conectar-se ao servidor. Por favor, verifique sua conexão com a internet e tente novamente.');
       print(e);
     }
   }
 
+  void _showAlertDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    double buttonWidth=150.0;
+    double buttonWidth = 150.0;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -178,9 +171,8 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              
               const SizedBox(height: 16.0),
-                Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
@@ -209,7 +201,8 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => CreateUserWidget()),
+                          MaterialPageRoute(
+                              builder: (context) => CreateUserWidget()),
                         );
                       },
                       child: const Text(
