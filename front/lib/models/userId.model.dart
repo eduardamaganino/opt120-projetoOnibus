@@ -3,8 +3,9 @@ class UserId {
   final String nome;
   final String email;
   final String senha;
+  final String cpf;
 
-  UserId(this.id, this.nome, this.email, this.senha);
+  UserId(this.id, this.nome, this.email, this.senha, this.cpf);
 
   static UserId? fromJson(jsonData) {}
 }

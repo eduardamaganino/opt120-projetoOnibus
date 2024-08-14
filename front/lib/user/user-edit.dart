@@ -14,6 +14,7 @@ class EditUserWidget extends StatefulWidget {
 
 class _EditUserWidgetState extends State<EditUserWidget> {
   String nome = '';
+  String cpf = '';
   String email = '';
   String senha = ''; // Inicializando a senha como string vazia
   String telefone = '';
@@ -35,6 +36,7 @@ class _EditUserWidgetState extends State<EditUserWidget> {
         final data = jsonDecode(response.body);
         setState(() {
           nome = data['nome'];
+          cpf = data['cpf'];
           email = data['email'];
           telefone = data['telefone'];
           isLoading = false;
@@ -137,6 +139,24 @@ class _EditUserWidgetState extends State<EditUserWidget> {
                     const SizedBox(height: 10),
                     TextField(
                       decoration: const InputDecoration(
+                        labelText: 'Cpf',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                      style: const TextStyle(color: Colors.black),
+                      controller: TextEditingController(text: cpf),
+                      onChanged: (value) {
+                        setState(() {
+                          cpf = value;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      decoration: const InputDecoration(
                         labelText: 'Email',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -193,7 +213,7 @@ class _EditUserWidgetState extends State<EditUserWidget> {
                     ElevatedButton(
                       onPressed: () async {
                         print(
-                            'Nome: $nome, Email: $email, Senha: $senha, Telefone: $telefone');
+                            'Nome: $nome, Cpf: $cpf, Email: $email, Senha: $senha, Telefone: $telefone');
 
                         final response = await http.put(
                           Uri.parse(
@@ -203,6 +223,7 @@ class _EditUserWidgetState extends State<EditUserWidget> {
                           },
                           body: jsonEncode(<String, String>{
                             'nome': nome,
+                            'cpf': cpf,
                             'email': email,
                             'senha': senha,
                             'telefone': telefone,

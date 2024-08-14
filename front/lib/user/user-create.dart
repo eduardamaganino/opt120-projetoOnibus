@@ -11,6 +11,7 @@ class CreateUserWidget extends StatefulWidget {
 
 class _CreateUserWidgetState extends State<CreateUserWidget> {
   String nome = '';
+  String cpf = '';
   String email = '';
   String senha = '';
   String telefone = '';
@@ -23,10 +24,11 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
           'Cadastro de Usuário',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color(0xFFFFD700), 
+        backgroundColor: const Color(0xFFFFD700),
       ),
       body: Container(
-        padding: const EdgeInsets.all(120.0), // Alterado para combinar com o tamanho da página de edição
+        padding: const EdgeInsets.all(
+            120.0), // Alterado para combinar com o tamanho da página de edição
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -47,12 +49,18 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
                 size: 100.0,
                 color: Colors.black,
               ),
-              
-              
+
               // Nome
               _buildTextField('Nome', (value) {
                 setState(() {
                   nome = value;
+                });
+              }),
+              const SizedBox(height: 10),
+              // CPF
+              _buildTextField('Cpf', (value) {
+                setState(() {
+                  cpf = value;
                 });
               }),
               const SizedBox(height: 10),
@@ -79,7 +87,7 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () async {
-                  final user = User(nome, email, senha, telefone, false);
+                  final user = User(nome, cpf, email, senha, telefone, false);
 
                   final response = await http.post(
                     Uri.parse('http://localhost:3000/newUser'),
@@ -88,6 +96,7 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
                     },
                     body: jsonEncode(<String, String>{
                       'nome': nome,
+                      'cpf': cpf,
                       'email': email,
                       'senha': senha,
                       'telefone': telefone,
@@ -99,7 +108,8 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text(response.statusCode == 200 ? 'Parabéns!' : 'Erro'),
+                        title: Text(
+                            response.statusCode == 200 ? 'Parabéns!' : 'Erro'),
                         content: Text(response.statusCode == 200
                             ? 'Usuário criado com sucesso!'
                             : 'Erro ao criar usuário.'),
@@ -111,12 +121,13 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
                                 // Direciona para a página de login se a criação do usuário for bem-sucedida
                                 Navigator.pushAndRemoveUntil(
                                   context,
-                                  MaterialPageRoute(builder: (context) => LoginPage()), // Substitua por sua tela de login
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          LoginPage()), // Substitua por sua tela de login
                                   (route) => false,
-                                 );
+                                );
                               }
                             },
-                            
                             child: const Text('OK'),
                           ),
                         ],
@@ -142,14 +153,16 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
     );
   }
 
-  Widget _buildTextField(String hintText, Function(String) onChanged, {bool obscureText = false}) {
+  Widget _buildTextField(String hintText, Function(String) onChanged,
+      {bool obscureText = false}) {
     return TextField(
       obscureText: obscureText,
       style: const TextStyle(color: Colors.black),
       decoration: InputDecoration(
         labelText: hintText,
         border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(100)), // Caixas de texto arredondadas
+          borderRadius: BorderRadius.all(
+              Radius.circular(100)), // Caixas de texto arredondadas
         ),
         filled: true,
         fillColor: Colors.white, // Cor de fundo das caixas
