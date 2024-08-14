@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_application_1/card/card-page.dart';
 import 'package:flutter_application_1/user/user-page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,7 @@ class _HomePageState extends State<HomePage> {
   static final List<Widget> _widgetOptions = <Widget>[
     UserPageWidget(),
     UserPageWidget(),
-    UserPageWidget()
+    CardPageWidget()
   ];
 
   void _onItemTapped(int index) {

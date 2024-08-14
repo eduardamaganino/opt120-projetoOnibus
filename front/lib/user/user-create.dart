@@ -1,12 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/usuario.model.dart';
 import 'package:http/http.dart' as http;
+import 'user-login.dart';
 
 class CreateUserWidget extends StatefulWidget {
-  String? get userId => null;
-
   @override
   _CreateUserWidgetState createState() => _CreateUserWidgetState();
 }
@@ -15,170 +13,148 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
   String nome = '';
   String email = '';
   String senha = '';
+  String telefone = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cadastro de usuario'),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        title: const Text(
+          'Cadastro de Usuário',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: const Color(0xFFFFD700), 
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Nome',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 15,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                SizedBox(
-                  height: 40,
-                  child: TextField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(3)),
-                      ),
-                      contentPadding: EdgeInsets.all(10),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        nome = value;
-                      });
+      body: Container(
+        padding: const EdgeInsets.all(120.0), // Alterado para combinar com o tamanho da página de edição
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFFFD700),
+              Color.fromARGB(255, 255, 255, 255),
+            ],
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              const Icon(
+                Icons.person_add_alt_1,
+                size: 100.0,
+                color: Colors.black,
+              ),
+              
+              
+              // Nome
+              _buildTextField('Nome', (value) {
+                setState(() {
+                  nome = value;
+                });
+              }),
+              const SizedBox(height: 10),
+              // Email
+              _buildTextField('Email', (value) {
+                setState(() {
+                  email = value;
+                });
+              }),
+              const SizedBox(height: 10),
+              // Senha
+              _buildTextField('Senha', (value) {
+                setState(() {
+                  senha = value;
+                });
+              }, obscureText: true),
+              const SizedBox(height: 10),
+              // Telefone
+              _buildTextField('Telefone', (value) {
+                setState(() {
+                  telefone = value;
+                });
+              }),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: () async {
+                  final user = User(nome, email, senha, telefone, false);
+
+                  final response = await http.post(
+                    Uri.parse('http://localhost:3000/newUser'),
+                    headers: <String, String>{
+                      'Content-Type': 'application/json; charset=UTF-8',
                     },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 15),
-            const Text(
-              'Email',
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 15,
-              ),
-            ),
-            const SizedBox(height: 4),
-            SizedBox(
-              height: 40,
-              child: TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(3)),
-                  ),
-                  contentPadding: EdgeInsets.all(10),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    email = value;
-                  });
-                },
-              ),
-            ),
-            const SizedBox(height: 15),
-            const Text(
-              'Senha',
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 15,
-              ),
-            ),
-            const SizedBox(height: 4),
-            SizedBox(
-              height: 40,
-              child: TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(3)),
-                  ),
-                  contentPadding: EdgeInsets.all(10),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    senha = value;
-                  });
-                },
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: Size(double.infinity, 40),
-                alignment: Alignment.center,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                foregroundColor: const Color.fromARGB(255, 255, 255, 255),
-                backgroundColor: Colors.pink.shade400,
-              ),
-              onPressed: () async {
-                final user = User(nome, email, senha, "telefone", false);
+                    body: jsonEncode(<String, String>{
+                      'nome': nome,
+                      'email': email,
+                      'senha': senha,
+                      'telefone': telefone,
+                    }),
+                  );
 
-                final response = await http.post(
-                  Uri.parse('http://localhost:3000/newUser'),
-                  headers: <String, String>{
-                    'Content-Type': 'application/json; charset=UTF-8',
-                  },
-                  body: jsonEncode(<String, String>{
-                    'nome': nome,
-                    'email': email,
-                    'senha': senha,
-                  }),
-                );
-
-                if (response.statusCode == 200) {
+                  // Dialog de sucesso ou erro
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Parabens!'),
-                        content: Text('Usuario criada com sucesso'),
+                        title: Text(response.statusCode == 200 ? 'Parabéns!' : 'Erro'),
+                        content: Text(response.statusCode == 200
+                            ? 'Usuário criado com sucesso!'
+                            : 'Erro ao criar usuário.'),
                         actions: [
                           TextButton(
                             onPressed: () {
                               Navigator.of(context).pop();
+                              if (response.statusCode == 200) {
+                                // Direciona para a página de login se a criação do usuário for bem-sucedida
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => LoginPage()), // Substitua por sua tela de login
+                                  (route) => false,
+                                 );
+                              }
                             },
-                            child: Text('OK'),
+                            
+                            child: const Text('OK'),
                           ),
                         ],
                       );
                     },
                   );
-                } else {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('Error'),
-                        content: Text('Erro ao criar tarefa'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
-              },
-              child: const Text('Criar'),
-            ),
-          ],
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFFD700),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                ),
+                child: const Text(
+                  'Cadastrar',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(String hintText, Function(String) onChanged, {bool obscureText = false}) {
+    return TextField(
+      obscureText: obscureText,
+      style: const TextStyle(color: Colors.black),
+      decoration: InputDecoration(
+        labelText: hintText,
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(100)), // Caixas de texto arredondadas
+        ),
+        filled: true,
+        fillColor: Colors.white, // Cor de fundo das caixas
+      ),
+      onChanged: onChanged,
     );
   }
 }

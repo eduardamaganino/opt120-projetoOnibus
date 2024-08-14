@@ -95,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Login',
+          ' ',
           style: TextStyle(
             color: Color.fromARGB(255, 0, 0, 0),
           ),
@@ -104,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: const Color(0xFFFFD700),
         leading: const Icon(
           Icons.login,
-          color: Colors.white,
+          color: Color.fromARGB(138, 0, 0, 0),
         ),
       ),
       body: Container(
@@ -124,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
               const Icon(
                 Icons.directions_bus,
                 size: 100.0,
-                color: Colors.black,
+                color: Color.fromARGB(150, 0, 0, 0),
               ),
               const SizedBox(height: 20),
               const Text(
