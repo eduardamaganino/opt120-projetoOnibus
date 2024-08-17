@@ -26,20 +26,19 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
         ),
         backgroundColor: const Color(0xFFFFD700),
       ),
-      body: Container(
-        padding: const EdgeInsets.all(
-            120.0), // Alterado para combinar com o tamanho da página de edição
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFFFD700),
-              Color.fromARGB(255, 255, 255, 255),
-            ],
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(20.0), // Ajuste o padding conforme necessário
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFFFFD700),
+                Color.fromARGB(255, 255, 255, 255),
+              ],
+            ),
           ),
-        ),
-        child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -49,7 +48,7 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
                 size: 100.0,
                 color: Colors.black,
               ),
-
+              const SizedBox(height: 20),
               // Nome
               _buildTextField('Nome', (value) {
                 setState(() {

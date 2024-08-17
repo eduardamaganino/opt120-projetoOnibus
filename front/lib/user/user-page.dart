@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/user/user-edit.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_application_1/card/card-create.dart';
+import 'package:flutter_application_1/notify/notify-create.dart';
+
 
 class UserPageWidget extends StatefulWidget {
   @override
@@ -36,10 +39,10 @@ class _UserPageWidgetState extends State<UserPageWidget> {
           .get(Uri.parse('http://localhost:3000/showUserId/${userId}'));
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
-        print(jsonData);
+        //print(jsonData);
         setState(() {
           _user = jsonData;
-          print(_user!['nome']);
+          //print(_user!['nome']);
         });
       } else {
         throw Exception('Failed to fetch user');
@@ -86,6 +89,50 @@ class _UserPageWidgetState extends State<UserPageWidget> {
                     },
                     child: Text(
                       'Edit User',
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 0, 0, 0),
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      //backgroundColor: Color.fromARGB(0, 255, 255, 255),
+                      shadowColor: Color.fromARGB(255, 237, 227, 137),
+                    ),
+                  ),
+                   ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CreateNotificationWidget(
+                            idUser: _user!['id']
+                            ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Enviar Aviso',
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 0, 0, 0),
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      //backgroundColor: Color.fromARGB(0, 255, 255, 255),
+                      shadowColor: Color.fromARGB(255, 237, 227, 137),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                           builder: (context) => CreateCardWidget(
+                            idUser: _user!['id']
+                           ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Solicitar Cartão',
                       style: TextStyle(
                         color: const Color.fromARGB(255, 0, 0, 0),
                       ),

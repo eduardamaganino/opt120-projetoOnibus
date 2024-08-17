@@ -46,7 +46,6 @@ class _LoginPageState extends State<LoginPage> {
         final String token = responseData['token'];
         final int userId = responseData['id'];
 
-        print("Login bem-sucedido");
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('token', token);
         prefs.setInt('userId', userId);
