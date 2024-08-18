@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_application_1/card/card-create.dart';
 import 'package:flutter_application_1/notify/notify-create.dart';
 
-
 class UserPageWidget extends StatefulWidget {
   @override
   _UserPageWidgetState createState() => _UserPageWidgetState();
@@ -61,11 +60,11 @@ class _UserPageWidgetState extends State<UserPageWidget> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Name: ${_user!['nome']}',
+                    'Nome: ${_user!['nome']}',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: const Color.fromARGB(255, 0, 0, 0), // Definindo a cor do título
+                      color: const Color.fromARGB(255, 0, 0, 0), // Definindo a cor do nome
                     ),
                   ),
                   SizedBox(height: 10),
@@ -73,6 +72,8 @@ class _UserPageWidgetState extends State<UserPageWidget> {
                     'Email: ${_user!['email']}',
                     style: TextStyle(
                       fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: const Color.fromARGB(255, 0, 0, 0), // Definindo a cor do título
                     ),
                   ),
                   SizedBox(height: 30),
@@ -88,7 +89,7 @@ class _UserPageWidgetState extends State<UserPageWidget> {
                       );
                     },
                     child: Text(
-                      'Edit User',
+                      'Editar Usuário',
                       style: TextStyle(
                         color: const Color.fromARGB(255, 0, 0, 0),
                       ),

@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'package:flutter_application_1/card/card-page.dart';
-import 'package:flutter_application_1/user/user-page.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/models/usuario.model.dart';
-import 'package:flutter_application_1/user/user-create.dart';
-import 'package:flutter_application_1/user/user-list.dart';
-import 'package:flutter_application_1/user/user-login.dart';
+import 'package:flutter_application_1/card/card-page.dart';
+import 'package:flutter_application_1/user/user-page.dart'; // Página de Usuário
+import 'package:flutter_application_1/user/userHome-page.dart'; // Página Home
+import 'package:flutter_application_1/user/user-login.dart'; // Página de Login
+import 'package:flutter_application_1/user/user-create.dart'; // Página de Criação de Usuário
 import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
@@ -43,9 +41,9 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 1;
 
   static final List<Widget> _widgetOptions = <Widget>[
-    UserPageWidget(),
-    UserPageWidget(),
-    CardPageWidget()
+    UserPageWidget(), // Página do Usuário
+    UserHomePageWidget(userId: 1), // Forneça o userId aqui
+    CardPageWidget()  // Página de Cartão
   ];
 
   void _onItemTapped(int index) {
@@ -59,7 +57,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _selectedIndex == 0 ? 'Home' : _selectedIndex == 1 ? 'Página de Usuário' : 'Cartão',
+          _selectedIndex == 0 ? 'Página de Usuário' : _selectedIndex == 1 ? 'Página Inicial' : 'Cartão',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Color(0xFFFFD700), // Amarelo Ouro
