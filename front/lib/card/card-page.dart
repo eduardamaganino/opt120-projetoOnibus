@@ -42,10 +42,7 @@ class _CardPageWidgetState extends State<CardPageWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Card Page'),
-        backgroundColor: const Color(0xFFFFD700),
-      ),
+      
       body: Center(
         child: cardData == null
             ? CircularProgressIndicator()
