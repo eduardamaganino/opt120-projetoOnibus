@@ -16,7 +16,7 @@ class _EditUserWidgetState extends State<EditUserWidget> {
   String nome = '';
   String cpf = '';
   String email = '';
-  String senha = ''; // Inicializando a senha como string vazia
+  String senha = '';
   String telefone = '';
   bool isLoading = true;
 
@@ -42,14 +42,12 @@ class _EditUserWidgetState extends State<EditUserWidget> {
           isLoading = false;
         });
       } else {
-        // Tratar erro de resposta
         print('Failed to load user details');
         setState(() {
           isLoading = false;
         });
       }
     } catch (error) {
-      // Tratar erro de conexão
       print('Error fetching user details: $error');
       setState(() {
         isLoading = false;
@@ -87,134 +85,74 @@ class _EditUserWidgetState extends State<EditUserWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Editar Usuário',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: const Color(0xFFFFD700),
+      ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
-          : Container(
-              padding: const EdgeInsets.all(120.0),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFFFFD700),
-                    Color.fromARGB(255, 255, 255, 255),
-                  ],
+          : SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(20.0), // Ajuste o padding conforme necessário
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFFFFD700),
+                      Color.fromARGB(255, 255, 255, 255),
+                    ],
+                  ),
                 ),
-              ),
-              child: Center(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     const Icon(
                       Icons.edit_note,
                       size: 100.0,
                       color: Colors.black,
                     ),
-                    const Text(
-                      'Editar Usuário\n',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 27.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    TextField(
-                      decoration: const InputDecoration(
-                        labelText: 'Nome',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(100)),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                      ),
-                      style: const TextStyle(color: Colors.black),
-                      controller: TextEditingController(text: nome),
-                      onChanged: (value) {
-                        setState(() {
-                          nome = value;
-                        });
-                      },
-                    ),
+                    const SizedBox(height: 20),
+                    // Nome
+                    _buildTextField('Nome', nome, (value) {
+                      setState(() {
+                        nome = value;
+                      });
+                    }),
                     const SizedBox(height: 10),
-                    TextField(
-                      decoration: const InputDecoration(
-                        labelText: 'Cpf',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(100)),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                      ),
-                      style: const TextStyle(color: Colors.black),
-                      controller: TextEditingController(text: cpf),
-                      onChanged: (value) {
-                        setState(() {
-                          cpf = value;
-                        });
-                      },
-                    ),
+                    // CPF
+                    _buildTextField('Cpf', cpf, (value) {
+                      setState(() {
+                        cpf = value;
+                      });
+                    }),
                     const SizedBox(height: 10),
-                    TextField(
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(100)),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                      ),
-                      style: const TextStyle(color: Colors.black),
-                      controller: TextEditingController(text: email),
-                      onChanged: (value) {
-                        setState(() {
-                          email = value;
-                        });
-                      },
-                    ),
+                    // Email
+                    _buildTextField('Email', email, (value) {
+                      setState(() {
+                        email = value;
+                      });
+                    }),
                     const SizedBox(height: 10),
-                    TextField(
-                      decoration: const InputDecoration(
-                        labelText: 'Senha',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(100)),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                      ),
-                      style: const TextStyle(color: Colors.black),
-                      obscureText: true,
-                      controller: TextEditingController(text: senha),
-                      onChanged: (value) {
-                        setState(() {
-                          senha = value;
-                        });
-                      },
-                    ),
+                    // Senha
+                    _buildTextField('Senha', senha, (value) {
+                      setState(() {
+                        senha = value;
+                      });
+                    }, obscureText: true),
                     const SizedBox(height: 10),
-                    TextField(
-                      decoration: const InputDecoration(
-                        labelText: 'Telefone',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(100)),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                      ),
-                      style: const TextStyle(color: Colors.black),
-                      controller: TextEditingController(text: telefone),
-                      onChanged: (value) {
-                        setState(() {
-                          telefone = value;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 10),
+                    // Telefone
+                    _buildTextField('Telefone', telefone, (value) {
+                      setState(() {
+                        telefone = value;
+                      });
+                    }),
+                    const SizedBox(height: 30),
                     ElevatedButton(
                       onPressed: () async {
-                        print(
-                            'Nome: $nome, Cpf: $cpf, Email: $email, Senha: $senha, Telefone: $telefone');
-
                         final response = await http.put(
                           Uri.parse(
                               'http://localhost:3000/updateUser/${widget.userId}'),
@@ -230,9 +168,6 @@ class _EditUserWidgetState extends State<EditUserWidget> {
                           }),
                         );
 
-                        print('Response status: ${response.statusCode}');
-                        print('Response body: ${response.body}');
-
                         if (response.statusCode == 200) {
                           _showMessage(
                               'Sucesso', 'Usuário editado com sucesso!');
@@ -241,12 +176,12 @@ class _EditUserWidgetState extends State<EditUserWidget> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFFFD700),
+                        backgroundColor: const Color(0xFFFFD700),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(100),
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Editar',
                         style: TextStyle(color: Colors.black),
                       ),
@@ -255,6 +190,25 @@ class _EditUserWidgetState extends State<EditUserWidget> {
                 ),
               ),
             ),
+    );
+  }
+
+  Widget _buildTextField(String hintText, String initialValue,
+      Function(String) onChanged,
+      {bool obscureText = false}) {
+    return TextField(
+      obscureText: obscureText,
+      style: const TextStyle(color: Colors.black),
+      decoration: InputDecoration(
+        labelText: hintText,
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(100)), // Caixas de texto arredondadas
+        ),
+        filled: true,
+        fillColor: Colors.white, // Cor de fundo das caixas
+      ),
+      controller: TextEditingController(text: initialValue),
+      onChanged: onChanged,
     );
   }
 }
