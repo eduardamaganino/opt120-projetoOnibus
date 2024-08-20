@@ -80,7 +80,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   Future<List<model.Notification>> _fetchNotifications(int userId) async {
     try {
-      final response = await http.get(Uri.parse('http://localhost:3000/getNotificacaoByUserId/$userId'));
+      final response = await http.get(Uri.parse('http://localhost:3000/getAllNotifi'));
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body) as List<dynamic>;
         return jsonData.map((item) => model.Notification.fromJson(item)).toList();

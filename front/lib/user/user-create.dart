@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/models/usuario.model.dart';
 import 'package:http/http.dart' as http;
 import 'user-login.dart';
 
@@ -26,19 +25,21 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
         ),
         backgroundColor: const Color(0xFFFFD700),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(20.0), // Ajuste o padding conforme necessário
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFFFFD700),
-                Color.fromARGB(255, 255, 255, 255),
-              ],
-            ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        padding: const EdgeInsets.all(20.0),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFFFD700),
+              Color.fromARGB(255, 241, 235, 209),
+            ],
           ),
+        ),
+        child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -49,35 +50,30 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
                 color: Colors.black,
               ),
               const SizedBox(height: 20),
-              // Nome
               _buildTextField('Nome', (value) {
                 setState(() {
                   nome = value;
                 });
               }),
               const SizedBox(height: 10),
-              // CPF
               _buildTextField('Cpf', (value) {
                 setState(() {
                   cpf = value;
                 });
               }),
               const SizedBox(height: 10),
-              // Email
               _buildTextField('Email', (value) {
                 setState(() {
                   email = value;
                 });
               }),
               const SizedBox(height: 10),
-              // Senha
               _buildTextField('Senha', (value) {
                 setState(() {
                   senha = value;
                 });
               }, obscureText: true),
               const SizedBox(height: 10),
-              // Telefone
               _buildTextField('Telefone', (value) {
                 setState(() {
                   telefone = value;
@@ -86,8 +82,6 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () async {
-                  final user = User(nome, cpf, email, senha, telefone, false);
-
                   final response = await http.post(
                     Uri.parse('http://localhost:3000/newUser'),
                     headers: <String, String>{
@@ -102,7 +96,6 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
                     }),
                   );
 
-                  // Dialog de sucesso ou erro
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -117,12 +110,10 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
                             onPressed: () {
                               Navigator.of(context).pop();
                               if (response.statusCode == 200) {
-                                // Direciona para a página de login se a criação do usuário for bem-sucedida
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          LoginPage()), // Substitua por sua tela de login
+                                      builder: (context) => LoginPage()),
                                   (route) => false,
                                 );
                               }
@@ -139,6 +130,7 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(100),
                   ),
+                  elevation: 5.0,
                 ),
                 child: const Text(
                   'Cadastrar',
@@ -161,10 +153,12 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
         labelText: hintText,
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(
-              Radius.circular(100)), // Caixas de texto arredondadas
+            Radius.circular(100),
+          ),
         ),
         filled: true,
-        fillColor: Colors.white, // Cor de fundo das caixas
+        fillColor:  Colors.transparent,
+        hintStyle: const TextStyle(color: Colors.black45),
       ),
       onChanged: onChanged,
     );

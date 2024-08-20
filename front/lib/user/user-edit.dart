@@ -96,18 +96,20 @@ class _EditUserWidgetState extends State<EditUserWidget> {
           ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Container(
-                padding: const EdgeInsets.all(20.0), // Ajuste o padding conforme necessário
+                padding: const EdgeInsets.all(20.0),
+                height: MediaQuery.of(context).size.height,
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
                       Color(0xFFFFD700),
-                      Color.fromARGB(255, 255, 255, 255),
+                      Color.fromARGB(255, 241, 235, 209),
                     ],
                   ),
                 ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     const Icon(
@@ -115,75 +117,74 @@ class _EditUserWidgetState extends State<EditUserWidget> {
                       size: 100.0,
                       color: Colors.black,
                     ),
-                    const SizedBox(height: 20),
-                    // Nome
+                    const SizedBox(height: 15),
                     _buildTextField('Nome', nome, (value) {
                       setState(() {
                         nome = value;
                       });
                     }),
-                    const SizedBox(height: 10),
-                    // CPF
+                    const SizedBox(height: 8),
                     _buildTextField('Cpf', cpf, (value) {
                       setState(() {
                         cpf = value;
                       });
                     }),
-                    const SizedBox(height: 10),
-                    // Email
+                    const SizedBox(height: 8),
                     _buildTextField('Email', email, (value) {
                       setState(() {
                         email = value;
                       });
                     }),
-                    const SizedBox(height: 10),
-                    // Senha
+                    const SizedBox(height: 8),
                     _buildTextField('Senha', senha, (value) {
                       setState(() {
                         senha = value;
                       });
                     }, obscureText: true),
-                    const SizedBox(height: 10),
-                    // Telefone
+                    const SizedBox(height: 8),
                     _buildTextField('Telefone', telefone, (value) {
                       setState(() {
                         telefone = value;
                       });
                     }),
                     const SizedBox(height: 30),
-                    ElevatedButton(
-                      onPressed: () async {
-                        final response = await http.put(
-                          Uri.parse(
-                              'http://localhost:3000/updateUser/${widget.userId}'),
-                          headers: <String, String>{
-                            'Content-Type': 'application/json; charset=UTF-8',
-                          },
-                          body: jsonEncode(<String, String>{
-                            'nome': nome,
-                            'cpf': cpf,
-                            'email': email,
-                            'senha': senha,
-                            'telefone': telefone,
-                          }),
-                        );
+                    SizedBox(
+                      width: double.infinity, // Makes the button full-width
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          final response = await http.put(
+                            Uri.parse(
+                                'http://localhost:3000/updateUser/${widget.userId}'),
+                            headers: <String, String>{
+                              'Content-Type': 'application/json; charset=UTF-8',
+                            },
+                            body: jsonEncode(<String, String>{
+                              'nome': nome,
+                              'cpf': cpf,
+                              'email': email,
+                              'senha': senha,
+                              'telefone': telefone,
+                            }),
+                          );
 
-                        if (response.statusCode == 200) {
-                          _showMessage(
-                              'Sucesso', 'Usuário editado com sucesso!');
-                        } else {
-                          _showMessage('Erro', 'Falha ao editar usuário');
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFFD700),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
+                          if (response.statusCode == 200) {
+                            _showMessage(
+                                'Sucesso', 'Usuário editado com sucesso!');
+                          } else {
+                            _showMessage('Erro', 'Falha ao editar usuário');
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFFD700),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          elevation: 5.0,
                         ),
-                      ),
-                      child: const Text(
-                        'Editar',
-                        style: TextStyle(color: Colors.black),
+                        child: const Text(
+                          'Editar',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ),
                     ),
                   ],
@@ -202,10 +203,10 @@ class _EditUserWidgetState extends State<EditUserWidget> {
       decoration: InputDecoration(
         labelText: hintText,
         border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(100)), // Caixas de texto arredondadas
+          borderRadius: BorderRadius.all(Radius.circular(100)),
         ),
         filled: true,
-        fillColor: Colors.white, // Cor de fundo das caixas
+        fillColor: Colors.transparent,
       ),
       controller: TextEditingController(text: initialValue),
       onChanged: onChanged,
