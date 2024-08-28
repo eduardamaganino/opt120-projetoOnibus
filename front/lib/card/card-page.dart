@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class CardPageWidget extends StatefulWidget {
-  final int idUser; // Id do usuário
+  final int idUser;
 
   CardPageWidget({required this.idUser});
 
@@ -17,7 +18,7 @@ class _CardPageWidgetState extends State<CardPageWidget> {
   @override
   void initState() {
     super.initState();
-    _fetchCardData(); // Buscar os dados do cartão ao iniciar
+    _fetchCardData();
   }
 
   Future<void> _fetchCardData() async {
@@ -39,10 +40,14 @@ class _CardPageWidgetState extends State<CardPageWidget> {
     }
   }
 
+  String _formatDate(String date) {
+    final DateTime parsedDate = DateTime.parse(date);
+    return DateFormat('dd/MM/yyyy').format(parsedDate);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: Center(
         child: cardData == null
             ? CircularProgressIndicator()
@@ -63,7 +68,9 @@ class _CardPageWidgetState extends State<CardPageWidget> {
                   children: [
                     CustomPaint(
                       painter: CardPainter(),
-                      child: Padding(
+                      child: Container(
+                        width: 350,
+                        height: 200,
                         padding: const EdgeInsets.all(20.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +102,7 @@ class _CardPageWidgetState extends State<CardPageWidget> {
                             ),
                             SizedBox(height: 10),
                             Text(
-                              'Vencimento: ${cardData!['dataVencimento']}',
+                              'Vencimento: ${_formatDate(cardData!['dataVencimento'])}',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 16,
@@ -112,7 +119,13 @@ class _CardPageWidgetState extends State<CardPageWidget> {
                         Icons.directions_bus,
                         size: 40,
                         color: Colors.black,
-                        // Removendo a sombra do ícone
+                        shadows: [
+                          Shadow(
+                            blurRadius: 3,
+                            color: Colors.black26,
+                            offset: Offset(2, 2),
+                          ),
+                        ],
                       ),
                     ),
                   ],

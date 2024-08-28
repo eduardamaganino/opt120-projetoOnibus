@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
   static final List<Widget> _widgetOptions = <Widget>[
     UserPageWidget(), // Página do Usuário
     UserHomePageWidget(userId: 1), // Forneça o userId aqui
-    CardPageWidget(idUser: 15)  // Página de Cartão
+    CardPageWidget(idUser: 13)  // Página de Cartão
   ];
 
   void _onItemTapped(int index) {
