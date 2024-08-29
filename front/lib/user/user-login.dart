@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/catraca/catraca.dart';
 import 'package:flutter_application_1/main.dart';
 import 'package:flutter_application_1/user/user-create.dart';
 import 'package:flutter_application_1/user/user-list.dart';
+import 'package:flutter_application_1/catraca/catraca.dart'; // Importa o CatracaWidget
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -206,6 +208,33 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       child: const Text(
                         'Criar Conta',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFFD700)),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16.0),
+              // Botão para abrir CatracaWidget
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: buttonWidth,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CatracaWidget()),
+                        );
+                      },
+                      child: const Text(
+                        'Catraca',
                         style: TextStyle(
                           color: Color.fromARGB(255, 0, 0, 0),
                         ),
