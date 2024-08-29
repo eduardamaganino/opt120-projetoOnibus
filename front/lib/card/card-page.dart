@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/card/card-create.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -29,9 +28,8 @@ class _CardPageWidgetState extends State<CardPageWidget> {
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
         setState(() {
-          cardData = data.isNotEmpty ? data : null;
+          cardData = json.decode(response.body);
         });
       } else {
         print('Erro ao buscar dados do cartão: ${response.statusCode}');
@@ -52,28 +50,7 @@ class _CardPageWidgetState extends State<CardPageWidget> {
     return Scaffold(
       body: Center(
         child: cardData == null
-            ? ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CreateCardWidget(
-                        idUser: widget.idUser,
-                      ),
-                    ),
-                  );
-                },
-                child: Text(
-                  'Solicitar Cartão',
-                  style: TextStyle(
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  //backgroundColor: Color.fromARGB(0, 255, 255, 255),
-                  shadowColor: Color.fromARGB(255, 237, 227, 137),
-                ),
-              )
+            ? CircularProgressIndicator()
             : Container(
                 width: 350, // Largura fixa do cartão
                 height: 200, // Altura fixa do cartão
