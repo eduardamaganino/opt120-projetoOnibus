@@ -30,31 +30,58 @@ class _UserHomePageWidgetState extends State<UserHomePageWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(height: 50),
-            Text(
-              'Bem-vindo ao "NomeDoProjeto"',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 100),
-            ElevatedButton(
-              onPressed: _openNotifications,
-              child: Text('Abrir Notificações'),
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.black,
-                backgroundColor: Colors.amber,
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Opacity(
+                opacity: 0.3, // Ajuste a opacidade para não sobrecarregar o conteúdo
+                child: Icon(
+                  Icons.directions_bus,
+                  size: MediaQuery.of(context).size.width * 0.47, // Tamanho do ícone
+                  color: Colors.grey, // Cor do ícone
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(height: 50),
+                Text(
+                  'Bem-vindo ao CARDBUSS',
+                  style: TextStyle(
+                    fontSize: 37,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Aplicativo para melhorar a sua experiência no serviço de transporte público',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.black54,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 80),
+                ElevatedButton(
+                  onPressed: _openNotifications,
+                  child: Text('Abrir Notificações'),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.amber,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
