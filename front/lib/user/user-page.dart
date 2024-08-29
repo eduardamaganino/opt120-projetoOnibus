@@ -38,10 +38,8 @@ class _UserPageWidgetState extends State<UserPageWidget> {
           .get(Uri.parse('http://localhost:3000/showUserId/${userId}'));
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
-        //print(jsonData);
         setState(() {
           _user = jsonData;
-          //print(_user!['nome']);
         });
       } else {
         throw Exception('Failed to fetch user');
@@ -54,98 +52,110 @@ class _UserPageWidgetState extends State<UserPageWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: _user != null
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Nome: ${_user!['nome']}',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: const Color.fromARGB(255, 0, 0, 0), // Definindo a cor do nome
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Email: ${_user!['email']}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: const Color.fromARGB(255, 0, 0, 0), // Definindo a cor do título
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditUserWidget(
-                            userId: _user!['id'],
-                          ),
+      body: Stack(
+        children: [
+          // Ícone de ônibus com opacidade
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Opacity(
+                opacity: 0.3, // Ajuste a opacidade conforme necessário
+                child: Icon(
+                  Icons.directions_bus,
+                  size: MediaQuery.of(context).size.width * 0.47, // Tamanho do ícone
+                  color: Colors.grey, // Cor do ícone
+                ),
+              ),
+            ),
+          ),
+          // Conteúdo da página
+          Center(
+            child: _user != null
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Nome: ${_user!['nome']}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
-                      );
-                    },
-                    child: Text(
-                      'Editar Usuário',
-                      style: TextStyle(
-                        color: const Color.fromARGB(255, 0, 0, 0),
                       ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      //backgroundColor: Color.fromARGB(0, 255, 255, 255),
-                      shadowColor: Color.fromARGB(255, 237, 227, 137),
-                    ),
-                  ),
-                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CreateNotificationWidget(
-                            idUser: _user!['id']
+                      SizedBox(height: 10),
+                      Text(
+                        'Email: ${_user!['email']}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: 30),
+                      _buildStyledButton(
+                        label: 'Editar Usuário',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditUserWidget(
+                                userId: _user!['id'],
+                              ),
                             ),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Enviar Aviso',
-                      style: TextStyle(
-                        color: const Color.fromARGB(255, 0, 0, 0),
+                          );
+                        },
                       ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      //backgroundColor: Color.fromARGB(0, 255, 255, 255),
-                      shadowColor: Color.fromARGB(255, 237, 227, 137),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                           builder: (context) => CreateCardWidget(
-                            idUser: _user!['id']
-                           ),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Solicitar Cartão',
-                      style: TextStyle(
-                        color: const Color.fromARGB(255, 0, 0, 0),
+                      SizedBox(height: 20),
+                      _buildStyledButton(
+                        label: 'Enviar Aviso',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CreateNotificationWidget(
+                                idUser: _user!['id'],
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      //backgroundColor: Color.fromARGB(0, 255, 255, 255),
-                      shadowColor: Color.fromARGB(255, 237, 227, 137),
-                    ),
-                  ),
-                ],
-              )
-            : CircularProgressIndicator(),
+                      SizedBox(height: 20),
+                      _buildStyledButton(
+                        label: 'Solicitar Cartão',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CreateCardWidget(
+                                idUser: _user!['id'],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  )
+                : CircularProgressIndicator(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStyledButton({required String label, required VoidCallback onPressed}) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Color(0xFFFFD700), // Cor do fundo
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(100), // Borda arredondada
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+        shadowColor: Color(0xFFD7B600), // Cor da sombra
+      ),
+      child: Text(
+        label,
+        style: TextStyle(color: Colors.black, fontSize: 18),
       ),
     );
   }
