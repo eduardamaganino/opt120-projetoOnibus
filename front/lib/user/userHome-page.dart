@@ -5,8 +5,9 @@ import 'package:http/http.dart' as http;
 
 class UserHomePageWidget extends StatefulWidget {
   final int userId;
+  final bool isAdm; // Alterado para bool
 
-  UserHomePageWidget({required this.userId});
+  UserHomePageWidget({required this.userId, required this.isAdm});
 
   @override
   _UserHomePageWidgetState createState() => _UserHomePageWidgetState();
@@ -22,7 +23,7 @@ class _UserHomePageWidgetState extends State<UserHomePageWidget> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => NotificationsPage(userId: widget.userId),
+        builder: (context) => NotificationsPage(userId: widget.userId, isAdm: widget.isAdm),
       ),
     );
   }
@@ -89,8 +90,9 @@ class _UserHomePageWidgetState extends State<UserHomePageWidget> {
 
 class NotificationsPage extends StatefulWidget {
   final int userId;
+  final bool isAdm; // Adicionando o parâmetro isAdm
 
-  NotificationsPage({required this.userId});
+  NotificationsPage({required this.userId, required this.isAdm});
 
   @override
   _NotificationsPageState createState() => _NotificationsPageState();
@@ -202,12 +204,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         'Data: ${notification.date}\nStatus: ${notification.isRead ? 'Lida' : 'Não Lida'}',
                         style: TextStyle(fontSize: 16),
                       ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          _deleteNotification(notification.id);
-                        },
-                      ),
+                      trailing: widget.isAdm // Exibir o botão de deletar apenas para admins
+                          ? IconButton(
+                              icon: Icon(Icons.delete, color: Colors.red),
+                              onPressed: () {
+                                _deleteNotification(notification.id);
+                              },
+                            )
+                          : null,
                       leading: Checkbox(
                         value: notification.isRead,
                         onChanged: (bool? value) {
