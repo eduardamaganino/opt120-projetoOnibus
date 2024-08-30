@@ -36,26 +36,27 @@ class _SolicitacoesPageState extends State<SolicitacoesPage> {
   }
 
   Future<void> _aprovarSolicitacao(int id, String status) async {
-    try {
-      final response = await http.put(
-        Uri.parse('http://localhost:3000/processarSolicitacao/$id'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{'status': status}),
-      );
+  try {
+    final response = await http.put(
+      Uri.parse('http://localhost:3000/processarSolicitacao/$id'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{'status': status}),
+    );
 
-      if (response.statusCode == 200) {
-        _fetchSolicitacoesPendentes(); // Atualizar lista após aprovação/rejeição
-        print('Solicitação $status com sucesso.');
-      } else {
-        print('Erro ao processar solicitação: ${response.statusCode}');
-        print('Resposta do servidor: ${response.body}');
-      }
-    } catch (e) {
-      print('Erro ao processar solicitação: $e');
+    if (response.statusCode == 200) {
+      _fetchSolicitacoesPendentes(); // Atualizar lista após aprovação/rejeição
+      print('Solicitação $status com sucesso.');
+    } else {
+      print('Erro ao processar solicitação: ${response.statusCode}');
+      print('Resposta do servidor: ${response.body}');
     }
+  } catch (e) {
+    print('Erro ao processar solicitação: $e');
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
