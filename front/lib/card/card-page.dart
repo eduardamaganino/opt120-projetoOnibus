@@ -76,37 +76,37 @@ class _CardPageWidgetState extends State<CardPageWidget> {
   }
 
   void _showQRCodeDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('QR Code para Adicionar Saldo'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Placeholder(fallbackHeight: 200, fallbackWidth: 200),
-              SizedBox(height: 10),
-              Text('Este QR Code será válido por 1 minuto.'),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                double valor = double.tryParse(_valorController.text) ?? 0.0;
-                _adicionarSaldo(valor);
-              },
-              child: Text('OK'),
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('QR Code para Adicionar Saldo'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/QRCode.png', // Caminho para o arquivo PNG dentro da pasta assets
+              height: 200,
+              width: 200,
             ),
+            SizedBox(height: 10),
+            Text('Este QR Code será válido por 1 minuto.'),
           ],
-        );
-      },
-    );
-
-    Future.delayed(Duration(minutes: 1), () {
-      Navigator.of(context).pop();
-    });
-  }
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              double valor = double.tryParse(_valorController.text) ?? 0.0;
+              _adicionarSaldo(valor);
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
+}
 
   Future<void> _adicionarSaldo(double valor) async {
     try {
