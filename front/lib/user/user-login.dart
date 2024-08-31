@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/catraca/catraca.dart';
 import 'package:flutter_application_1/main.dart';
 import 'package:flutter_application_1/user/user-create.dart';
-import 'package:flutter_application_1/user/user-list.dart';
 import 'package:flutter_application_1/catraca/catraca.dart'; // Importa o CatracaWidget
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,48 +25,45 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> fazerLogin() async {
-    const String url = 'http://localhost:3000/login';
-    final String email = emailController.text;
-    final String senha = senhaController.text;
+  const String url = 'http://localhost:3000/login';
+  final String email = emailController.text;
+  final String senha = senhaController.text;
 
-    try {
-      final response = await http.post(
-        Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          'email': email,
-          'senha': senha,
-        }),
+  try {
+    final response = await http.post(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'email': email,
+        'senha': senha,
+      }),
+    );
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final String token = responseData['token'];
+      final int userId = responseData['id'];
+      
+      final bool isAdm = responseData['is_adm'] == 1; // Assumindo que o valor retornado é um número (1 ou 0)
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+      await prefs.setInt('userId', userId);
+      await prefs.setBool('isAdm', isAdm);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
       );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        final String token = responseData['token'];
-        final int userId = responseData['id'];
-
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('token', token);
-        prefs.setInt('userId', userId);
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-        );
-      } else if (response.statusCode == 401) {
-        _showAlertDialog('Credenciais Inválidas',
-            'Por favor, verifique suas credenciais e tente novamente.');
-      } else {
-        _showAlertDialog('Erro',
-            'Ocorreu um erro ao tentar realizar o login. Tente novamente.');
-      }
-    } catch (e) {
-      _showAlertDialog('Erro',
-          'Não foi possível conectar-se ao servidor. Por favor, verifique sua conexão com a internet e tente novamente.');
-      print(e);
+    } else {
+      _showAlertDialog('Erro', 'Credenciais inválidas ou erro na requisição.');
     }
+  } catch (e) {
+    _showAlertDialog('Erro', 'Não foi possível conectar-se ao servidor. Verifique sua conexão.');
+    print(e);
   }
+}
 
   void _showAlertDialog(String title, String message) {
     showDialog(

@@ -3,7 +3,6 @@ import 'package:flutter_application_1/card/card-page.dart';
 import 'package:flutter_application_1/user/user-page.dart'; // Página de Usuário
 import 'package:flutter_application_1/user/userHome-page.dart'; // Página Home
 import 'package:flutter_application_1/user/user-login.dart'; // Página de Login
-import 'package:flutter_application_1/user/user-create.dart'; // Página de Criação de Usuário
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
@@ -42,35 +41,33 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 1;
-  int? _userId; // Adicionado para armazenar o userId
+  int? _userId; // Armazena o userId
+  bool _isAdm = false; // Armazena se o usuário é administrador
 
   @override
   void initState() {
     super.initState();
-    _getUserIDFromLocalStorage(); // Recupera o userId ao iniciar
+    _getUserDetailsFromLocalStorage(); // Recupera o userId e isAdm ao iniciar
   }
 
-  Future<void> _getUserIDFromLocalStorage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? userId = prefs.getInt('userId');
+  Future<void> _getUserDetailsFromLocalStorage() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int? userId = prefs.getInt('userId');
+  bool isAdm = prefs.getBool('isAdm') ?? false;
 
-    if (userId != null) {
-      setState(() {
-        _userId = userId; // Armazena o userId no estado
-      });
-    } else {
-      print('User ID not found in Local Storage');
-    }
-  }
+  setState(() {
+    _userId = userId;
+    _isAdm = isAdm;
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {
-    // Atualiza _widgetOptions para usar _userId
     final List<Widget> _widgetOptions = <Widget>[
-      UserPageWidget(), // Página do Usuário
-      UserHomePageWidget(
-          userId: _userId ?? 0), // Passa o userId para UserHomePageWidget
-      CardPageWidget(idUser: _userId ?? 0) // Passa o userId para CardPageWidget
+      UserPageWidget(),
+      UserHomePageWidget(userId: _userId ?? 0, isAdm: _isAdm), 
+      CardPageWidget(idUser: _userId ?? 0, isAdm: _isAdm) 
     ];
 
     return Scaffold(
@@ -89,7 +86,13 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.all(16.0),
         color: Color(0xFFFFFACD), // Amarelo Claro
         child: Center(
-          child: _widgetOptions.elementAt(_selectedIndex),
+          child: Column(
+            children: [
+              Expanded(
+                child: _widgetOptions.elementAt(_selectedIndex),
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(

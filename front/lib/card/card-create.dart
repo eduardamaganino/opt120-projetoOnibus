@@ -172,8 +172,8 @@ class _CreateCardWidgetState extends State<CreateCardWidget> {
         reader.onLoadEnd.listen((e) {
           setState(() {
             _selectedFile = PlatformFile(
-              name: files[0]!.name,
-              size: files[0]!.size,
+              name: files[0].name,
+              size: files[0].size,
               bytes: reader.result as Uint8List,
             );
           });
@@ -194,30 +194,30 @@ class _CreateCardWidgetState extends State<CreateCardWidget> {
   }
 
   Future<bool> _uploadFile(PlatformFile file) async {
-    final uri = Uri.parse('http://localhost:3000/uploadPdf');
-    final request = http.MultipartRequest('POST', uri)
-      ..fields['idUser'] = widget.idUser.toString()
-      ..fields['tipo'] = tipo.toString()
-      ..files.add(
-        http.MultipartFile.fromBytes(
-          'file',
-          file.bytes!,
-          filename: file.name,
-        ),
-      );
+  final uri = Uri.parse('http://localhost:3000/solicitarCartao/${widget.idUser}');
+  final request = http.MultipartRequest('POST', uri)
+    ..fields['tipo'] = tipo.toString() 
+    ..files.add(
+      http.MultipartFile.fromBytes(
+        'file',
+        file.bytes!,
+        filename: file.name,
+      ),
+    );
 
-    try {
-      final response = await request.send();
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      print('Erro ao enviar arquivo: $e');
+  try {
+    final response = await request.send();
+    if (response.statusCode == 201) { 
+      return true;
+    } else {
+      print('Erro ao enviar arquivo. Status code: ${response.statusCode}');
       return false;
     }
+  } catch (e) {
+    print('Erro ao enviar arquivo: $e');
+    return false;
   }
+}
 
   void _showDialog(String title, String message) {
     showDialog(
