@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class UserHomePageWidget extends StatefulWidget {
   final int userId;
-  final bool isAdm; // Alterado para bool
+  final bool isAdm;
 
   UserHomePageWidget({required this.userId, required this.isAdm});
 
@@ -37,11 +37,11 @@ class _UserHomePageWidgetState extends State<UserHomePageWidget> {
             child: Align(
               alignment: Alignment.bottomLeft,
               child: Opacity(
-                opacity: 0.3, // Ajuste a opacidade para não sobrecarregar o conteúdo
+                opacity: 0.3,
                 child: Icon(
                   Icons.directions_bus,
-                  size: MediaQuery.of(context).size.width * 0.47, // Tamanho do ícone
-                  color: Colors.grey, // Cor do ícone
+                  size: MediaQuery.of(context).size.width * 0.47,
+                  color: Colors.grey,
                 ),
               ),
             ),
@@ -90,7 +90,7 @@ class _UserHomePageWidgetState extends State<UserHomePageWidget> {
 
 class NotificationsPage extends StatefulWidget {
   final int userId;
-  final bool isAdm; // Adicionando o parâmetro isAdm
+  final bool isAdm;
 
   NotificationsPage({required this.userId, required this.isAdm});
 
@@ -99,12 +99,13 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationsPageState extends State<NotificationsPage> {
-  late Future<List<model.Notification>> _notifications;
+  late Future<List<model.Notification>> _notificationsFuture;
+  List<model.Notification>? _notifications;
 
   @override
   void initState() {
     super.initState();
-    _notifications = _fetchNotifications(widget.userId);
+    _notificationsFuture = _fetchNotifications(widget.userId);
   }
 
   Future<List<model.Notification>> _fetchNotifications(int userId) async {
@@ -112,7 +113,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
       final response = await http.get(Uri.parse('http://localhost:3000/getAllNotifi'));
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body) as List<dynamic>;
-        return jsonData.map((item) => model.Notification.fromJson(item)).toList();
+        _notifications = jsonData.map((item) => model.Notification.fromJson(item)).toList();
+
+        // Ordena as notificações para que as não lidas venham antes das lidas
+        _notifications!.sort((a, b) {
+          return a.isRead == b.isRead ? 0 : (a.isRead ? 1 : -1);
+        });
+
+        return _notifications!;
       } else {
         throw Exception('Falha ao carregar notificações');
       }
@@ -131,7 +139,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
       );
       if (response.statusCode == 200) {
         setState(() {
-          _notifications = _fetchNotifications(widget.userId);
+          // Atualiza o status da notificação na lista local
+          final notification = _notifications!.firstWhere((n) => n.id == notificationId);
+          notification.isRead = true;
+
+          // Reordena a lista para mover a notificação lida para o final
+          _notifications!.sort((a, b) {
+            return a.isRead == b.isRead ? 0 : (a.isRead ? 1 : -1);
+          });
         });
       } else {
         throw Exception('Falha ao atualizar o status da notificação');
@@ -149,13 +164,13 @@ class _NotificationsPageState extends State<NotificationsPage> {
       );
       if (response.statusCode == 200) {
         setState(() {
-          _notifications = _fetchNotifications(widget.userId);
+          _notifications!.removeWhere((notification) => notification.id == notificationId);
         });
       } else {
         throw Exception('Falha ao excluir notificação');
       }
     } catch (e) {
-      print(e);
+      print('Exceção ao excluir notificação: $e');
       throw e;
     }
   }
@@ -177,22 +192,21 @@ class _NotificationsPageState extends State<NotificationsPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FutureBuilder<List<model.Notification>>(
-          future: _notifications,
+          future: _notificationsFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Erro ao carregar notificações'));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            } else if (_notifications == null || _notifications!.isEmpty) {
               return Center(child: Text('Nenhuma notificação disponível'));
             } else {
-              final notifications = snapshot.data!;
               return ListView.builder(
-                itemCount: notifications.length,
+                itemCount: _notifications!.length,
                 itemBuilder: (context, index) {
-                  final notification = notifications[index];
+                  final notification = _notifications![index];
                   return Card(
-                    color: Colors.white,
+                    color: notification.isRead ? Colors.grey[200] : Colors.white,
                     elevation: 5,
                     child: ListTile(
                       contentPadding: EdgeInsets.all(16.0),
@@ -204,7 +218,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         'Data: ${notification.date}\nStatus: ${notification.isRead ? 'Lida' : 'Não Lida'}',
                         style: TextStyle(fontSize: 16),
                       ),
-                      trailing: widget.isAdm // Exibir o botão de deletar apenas para admins
+                      trailing: widget.isAdm
                           ? IconButton(
                               icon: Icon(Icons.delete, color: Colors.red),
                               onPressed: () {
@@ -214,15 +228,21 @@ class _NotificationsPageState extends State<NotificationsPage> {
                           : null,
                       leading: Checkbox(
                         value: notification.isRead,
-                        onChanged: (bool? value) {
-                          if (value != null) {
+                        onChanged: notification.isRead ? null : (bool? value) {
+                          if (value == true) {
                             _markAsRead(notification.id);
+                            setState(() {
+                              notification.isRead = true;
+                            });
                           }
                         },
                       ),
                       onTap: () {
                         if (!notification.isRead) {
                           _markAsRead(notification.id);
+                          setState(() {
+                            notification.isRead = true;
+                          });
                         }
                       },
                     ),
