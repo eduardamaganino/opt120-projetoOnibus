@@ -61,7 +61,8 @@ class _UserPageWidgetState extends State<UserPageWidget> {
                 opacity: 0.3, // Ajuste a opacidade conforme necessário
                 child: Icon(
                   Icons.directions_bus,
-                  size: MediaQuery.of(context).size.width * 0.47, // Tamanho do ícone
+                  size: MediaQuery.of(context).size.width *
+                      0.47, // Tamanho do ícone
                   color: Colors.grey, // Cor do ícone
                 ),
               ),
@@ -105,7 +106,8 @@ class _UserPageWidgetState extends State<UserPageWidget> {
                         },
                       ),
                       SizedBox(height: 20),
-                      if (_user!['is_adm'] == 1) // Exibe o botão apenas para administradores
+                      if (_user!['is_adm'] ==
+                          1) // Exibe o botão apenas para administradores
                         _buildStyledButton(
                           label: 'Enviar Aviso',
                           onPressed: () {
@@ -119,20 +121,6 @@ class _UserPageWidgetState extends State<UserPageWidget> {
                             );
                           },
                         ),
-                      SizedBox(height: 20),
-                      _buildStyledButton(
-                        label: 'Solicitar Cartão',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CreateCardWidget(
-                                idUser: _user!['id'],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
                     ],
                   )
                 : CircularProgressIndicator(),
@@ -142,7 +130,8 @@ class _UserPageWidgetState extends State<UserPageWidget> {
     );
   }
 
-  Widget _buildStyledButton({required String label, required VoidCallback onPressed}) {
+  Widget _buildStyledButton(
+      {required String label, required VoidCallback onPressed}) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(

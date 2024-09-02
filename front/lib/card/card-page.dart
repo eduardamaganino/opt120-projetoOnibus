@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/card/card-create.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:flutter_application_1/card/SolicitacoesPage.dart';
@@ -17,7 +18,8 @@ class CardPageWidget extends StatefulWidget {
 class _CardPageWidgetState extends State<CardPageWidget> {
   Map<String, dynamic>? cardData;
   List<dynamic> solicitacoes = [];
-  final TextEditingController _valorController = TextEditingController(); // Controller para capturar o valor inserido
+  final TextEditingController _valorController =
+      TextEditingController(); // Controller para capturar o valor inserido
 
   @override
   void initState() {
@@ -76,37 +78,37 @@ class _CardPageWidgetState extends State<CardPageWidget> {
   }
 
   void _showQRCodeDialog() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('QR Code para Adicionar Saldo'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              'assets/QRCode.png', // Caminho para o arquivo PNG dentro da pasta assets
-              height: 200,
-              width: 200,
-            ),
-            SizedBox(height: 10),
-            Text('Este QR Code será válido por 1 minuto.'),
-          ],
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              double valor = double.tryParse(_valorController.text) ?? 0.0;
-              _adicionarSaldo(valor);
-            },
-            child: Text('OK'),
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('QR Code para Adicionar Saldo'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/QRCode.png', // Caminho para o arquivo PNG dentro da pasta assets
+                height: 200,
+                width: 200,
+              ),
+              SizedBox(height: 10),
+              Text('Este QR Code será válido por 1 minuto.'),
+            ],
           ),
-        ],
-      );
-    },
-  );
-}
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                double valor = double.tryParse(_valorController.text) ?? 0.0;
+                _adicionarSaldo(valor);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> _adicionarSaldo(double valor) async {
     try {
@@ -188,10 +190,6 @@ class _CardPageWidgetState extends State<CardPageWidget> {
       );
     } else {
       return Scaffold(
-        appBar: AppBar(
-          title: Text('Detalhes do Cartão'),
-          backgroundColor: Color(0xFFFFD700),
-        ),
         body: _buildCardView(),
       );
     }
@@ -199,8 +197,34 @@ class _CardPageWidgetState extends State<CardPageWidget> {
 
   Widget _buildCardView() {
     if (cardData == null) {
-      return Center(child: CircularProgressIndicator());
+      return Center(
+        child: ElevatedButton(
+          onPressed: () {
+            // Navegar para a página de solicitação de cartão
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CreateCardWidget(
+                  idUser: widget.idUser,
+                ),
+              ),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFFFFD700),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(100),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+          ),
+          child: Text(
+            'Solicitar Cartão',
+            style: TextStyle(color: Colors.black, fontSize: 18),
+          ),
+        ),
+      );
     }
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -286,7 +310,7 @@ class _CardPageWidgetState extends State<CardPageWidget> {
         ),
         SizedBox(height: 20),
         ElevatedButton(
-          onPressed: _showSaldoInputDialog, // Chama a função para mostrar o diálogo de input
+          onPressed: _showSaldoInputDialog,
           style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFFFFD700),
             shape: RoundedRectangleBorder(
@@ -308,14 +332,15 @@ class CardPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Color.fromARGB(231, 255, 226, 34)
+      ..color = Color(0xFFFFD700)
       ..style = PaintingStyle.fill;
 
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(rect, Radius.circular(15)),
-      paint,
+    final roundedRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      Radius.circular(15),
     );
+
+    canvas.drawRRect(roundedRect, paint);
   }
 
   @override
