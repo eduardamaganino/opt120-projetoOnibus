@@ -226,105 +226,108 @@ class _CardPageWidgetState extends State<CardPageWidget> {
     }
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: 350,
-          height: 200,
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 10,
-                spreadRadius: 1,
-                offset: Offset(5, 5),
-              ),
-            ],
-          ),
-          child: Stack(
-            children: [
-              CustomPaint(
-                painter: CardPainter(),
-                child: Container(
-                  width: 350,
-                  height: 200,
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Número: ${cardData!['id']}',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+    Center(
+      child: Container(
+        width: 350,
+        height: 200,
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10,
+              spreadRadius: 1,
+              offset: Offset(5, 5),
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            CustomPaint(
+              painter: CardPainter(),
+              child: Container(
+                width: 350,
+                height: 200,
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Número: ${cardData!['id']}',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Valor: R\$ ${cardData!['valor']}',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                        ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Valor: R\$ ${cardData!['valor']}',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
                       ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Tipo: ${cardData!['tipo']}',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                        ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Tipo: ${cardData!['tipo']}',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
                       ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Vencimento: ${_formatDate(cardData!['dataVencimento'])}',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                        ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Vencimento: ${_formatDate(cardData!['dataVencimento'])}',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 10,
-                right: 15,
-                child: Icon(
-                  Icons.directions_bus,
-                  size: 40,
-                  color: Colors.black,
-                  shadows: [
-                    Shadow(
-                      blurRadius: 3,
-                      color: Colors.black26,
-                      offset: Offset(2, 2),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-        SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: _showSaldoInputDialog,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFFFFD700),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(100),
             ),
-            padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-          ),
-          child: Text(
-            'Adicionar Saldo',
-            style: TextStyle(color: Colors.black, fontSize: 18),
-          ),
+            Positioned(
+              top: 10,
+              right: 15,
+              child: Icon(
+                Icons.directions_bus,
+                size: 40,
+                color: Colors.black,
+                shadows: [
+                  Shadow(
+                    blurRadius: 3,
+                    color: Colors.black26,
+                    offset: Offset(2, 2),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-      ],
-    );
+      ),
+    ),
+    SizedBox(height: 20),
+    ElevatedButton(
+      onPressed: _showSaldoInputDialog,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Color(0xFFFFD700),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(100),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+      ),
+      child: Text(
+        'Adicionar Saldo',
+        style: TextStyle(color: Colors.black, fontSize: 18),
+      ),
+    ),
+  ],
+);
+
   }
 }
 
