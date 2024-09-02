@@ -25,10 +25,9 @@ class _UserPageWidgetState extends State<UserPageWidget> {
     int? userId = prefs.getInt('userId');
 
     if (userId != null) {
-      int userIdInt = userId;
-      await _fetchUser(userIdInt);
+      await _fetchUser(userId);
     } else {
-      print('User ID not found in Local Storage');
+      print('ID do usuário não encontrado!');
     }
   }
 
@@ -42,7 +41,7 @@ class _UserPageWidgetState extends State<UserPageWidget> {
           _user = jsonData;
         });
       } else {
-        throw Exception('Failed to fetch user');
+        throw Exception('Falha ao buscar usuário!');
       }
     } catch (e) {
       print(e);
@@ -106,19 +105,20 @@ class _UserPageWidgetState extends State<UserPageWidget> {
                         },
                       ),
                       SizedBox(height: 20),
-                      _buildStyledButton(
-                        label: 'Enviar Aviso',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CreateNotificationWidget(
-                                idUser: _user!['id'],
+                      if (_user!['is_adm'] == 1) // Exibe o botão apenas para administradores
+                        _buildStyledButton(
+                          label: 'Enviar Aviso',
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CreateNotificationWidget(
+                                  idUser: _user!['id'],
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
+                            );
+                          },
+                        ),
                       SizedBox(height: 20),
                       _buildStyledButton(
                         label: 'Solicitar Cartão',

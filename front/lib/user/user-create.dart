@@ -17,6 +17,8 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
 
   @override
   Widget build(BuildContext context) {
+    double textFieldWidth = 600.0; // Define a largura dos campos de texto
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -54,31 +56,31 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
                 setState(() {
                   nome = value;
                 });
-              }),
+              }, textFieldWidth: textFieldWidth),
               const SizedBox(height: 10),
               _buildTextField('Cpf', (value) {
                 setState(() {
                   cpf = value;
                 });
-              }),
+              }, textFieldWidth: textFieldWidth),
               const SizedBox(height: 10),
               _buildTextField('Email', (value) {
                 setState(() {
                   email = value;
                 });
-              }),
+              }, textFieldWidth: textFieldWidth),
               const SizedBox(height: 10),
               _buildTextField('Senha', (value) {
                 setState(() {
                   senha = value;
                 });
-              }, obscureText: true),
+              }, obscureText: true, textFieldWidth: textFieldWidth),
               const SizedBox(height: 10),
               _buildTextField('Telefone', (value) {
                 setState(() {
                   telefone = value;
                 });
-              }),
+              }, textFieldWidth: textFieldWidth),
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () async {
@@ -145,22 +147,25 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
   }
 
   Widget _buildTextField(String hintText, Function(String) onChanged,
-      {bool obscureText = false}) {
-    return TextField(
-      obscureText: obscureText,
-      style: const TextStyle(color: Colors.black),
-      decoration: InputDecoration(
-        labelText: hintText,
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(100),
+      {bool obscureText = false, double textFieldWidth = 300.0}) {
+    return SizedBox(
+      width: textFieldWidth, // Ajusta a largura do campo de texto
+      child: TextField(
+        obscureText: obscureText,
+        style: const TextStyle(color: Colors.black),
+        decoration: InputDecoration(
+          labelText: hintText,
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(100),
+            ),
           ),
+          filled: true,
+          fillColor: Colors.transparent,
+          hintStyle: const TextStyle(color: Colors.black45),
         ),
-        filled: true,
-        fillColor:  Colors.transparent,
-        hintStyle: const TextStyle(color: Colors.black45),
+        onChanged: onChanged,
       ),
-      onChanged: onChanged,
     );
   }
 }

@@ -114,7 +114,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
         final jsonData = jsonDecode(response.body) as List<dynamic>;
         return jsonData.map((item) => model.Notification.fromJson(item)).toList();
       } else {
-        throw Exception('Failed to load notifications');
+        throw Exception('Falha ao carregar notificações');
       }
     } catch (e) {
       print(e);
@@ -134,7 +134,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
           _notifications = _fetchNotifications(widget.userId);
         });
       } else {
-        throw Exception('Failed to update notification status');
+        throw Exception('Falha ao atualizar o status da notificação');
       }
     } catch (e) {
       print(e);
@@ -152,7 +152,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
           _notifications = _fetchNotifications(widget.userId);
         });
       } else {
-        throw Exception('Failed to delete notification');
+        throw Exception('Falha ao excluir notificação');
       }
     } catch (e) {
       print(e);

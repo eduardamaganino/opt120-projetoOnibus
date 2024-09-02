@@ -42,13 +42,13 @@ class _EditUserWidgetState extends State<EditUserWidget> {
           isLoading = false;
         });
       } else {
-        print('Failed to load user details');
+        print('Falha ao carregar detalhes do usuário');
         setState(() {
           isLoading = false;
         });
       }
     } catch (error) {
-      print('Error fetching user details: $error');
+      print('Erro ao buscar detalhes do usuário: $error');
       setState(() {
         isLoading = false;
       });

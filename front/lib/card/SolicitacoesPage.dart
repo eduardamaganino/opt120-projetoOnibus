@@ -35,28 +35,69 @@ class _SolicitacoesPageState extends State<SolicitacoesPage> {
     }
   }
 
-  Future<void> _aprovarSolicitacao(int id, String status) async {
-  try {
-    final response = await http.put(
-      Uri.parse('http://localhost:3000/processarSolicitacao/$id'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{'status': status}),
-    );
+  Future<void> _aprovarSolicitacao(int id, String status, [double? valor]) async {
+    try {
+      final response = await http.put(
+        Uri.parse('http://localhost:3000/processarSolicitacao/$id'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'status': status,
+          'valor': valor ?? 0, // Adiciona o valor se fornecido, caso contrário, 0
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      _fetchSolicitacoesPendentes(); // Atualizar lista após aprovação/rejeição
-      print('Solicitação $status com sucesso.');
-    } else {
-      print('Erro ao processar solicitação: ${response.statusCode}');
-      print('Resposta do servidor: ${response.body}');
+      if (response.statusCode == 200) {
+        _fetchSolicitacoesPendentes(); // Atualizar lista após aprovação/rejeição
+        print('Solicitação $status com sucesso.');
+      } else {
+        print('Erro ao processar solicitação: ${response.statusCode}');
+        print('Resposta do servidor: ${response.body}');
+      }
+    } catch (e) {
+      print('Erro ao processar solicitação: $e');
     }
-  } catch (e) {
-    print('Erro ao processar solicitação: $e');
   }
-}
 
+  void _showValorDialog(int id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        double? valor;
+        return AlertDialog(
+          title: Text('Adicionar Saldo ao Cartão'),
+          content: TextField(
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            decoration: InputDecoration(hintText: "Digite o valor"),
+            onChanged: (text) {
+              valor = double.tryParse(text);
+            },
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Aceitar'),
+              onPressed: () {
+                if (valor != null) {
+                  _aprovarSolicitacao(id, 'aprovado', valor);
+                  Navigator.of(context).pop();
+                } else {
+                  // Handle the case where valor is not provided
+                  print('Valor inválido');
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,13 +122,19 @@ class _SolicitacoesPageState extends State<SolicitacoesPage> {
           margin: EdgeInsets.all(10),
           child: ListTile(
             title: Text('Solicitação ID: ${solicitacao['id']}'),
-            subtitle: Text('Usuário ID: ${solicitacao['idUser']}'),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Usuário ID: ${solicitacao['idUser']}'),
+                Text('Valor: R\$ ${solicitacao['valor']}'), // Exibe o valor
+              ],
+            ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
                   icon: Icon(Icons.check, color: Colors.green),
-                  onPressed: () => _aprovarSolicitacao(solicitacao['id'], 'aprovado'),
+                  onPressed: () => _showValorDialog(solicitacao['id']),
                 ),
                 IconButton(
                   icon: Icon(Icons.close, color: Colors.red),

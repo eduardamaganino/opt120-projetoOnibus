@@ -88,6 +88,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     double buttonWidth = 150.0;
+    double textFieldWidth = 600.0; // Defina a largura dos campos de texto
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -131,14 +133,17 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 8),
-              TextField(
-                controller: emailController,
-                style: const TextStyle(color: Colors.black),
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(100)),
+              SizedBox(
+                width: textFieldWidth,
+                child: TextField(
+                  controller: emailController,
+                  style: const TextStyle(color: Colors.black),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(100)),
+                    ),
+                    contentPadding: EdgeInsets.all(12),
                   ),
-                  contentPadding: EdgeInsets.all(12),
                 ),
               ),
               const SizedBox(height: 16),
@@ -150,19 +155,22 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 8),
-              TextField(
-                controller: senhaController,
-                style: const TextStyle(color: Colors.black),
-                obscureText: _obscureText,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(100)),
-                  ),
-                  contentPadding: EdgeInsets.all(12),
-                  suffixIcon: GestureDetector(
-                    onTap: _togglePasswordVisibility,
-                    child: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
+              SizedBox(
+                width: textFieldWidth,
+                child: TextField(
+                  controller: senhaController,
+                  style: const TextStyle(color: Colors.black),
+                  obscureText: _obscureText,
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(100)),
+                    ),
+                    contentPadding: EdgeInsets.all(12),
+                    suffixIcon: GestureDetector(
+                      onTap: _togglePasswordVisibility,
+                      child: Icon(
+                        _obscureText ? Icons.visibility_off : Icons.visibility,
+                      ),
                     ),
                   ),
                 ),
@@ -214,7 +222,6 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
               const SizedBox(height: 16.0),
-              // Botão para abrir CatracaWidget
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

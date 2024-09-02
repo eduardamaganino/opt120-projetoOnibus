@@ -16,7 +16,10 @@ class CreateCardWidget extends StatefulWidget {
 class _CreateCardWidgetState extends State<CreateCardWidget> {
   int tipo = 1; // Tipo por padrão será "Normal"
   PlatformFile? _selectedFile;
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _valorController = TextEditingController(); // Controller para capturar o valor inserido
 
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,14 +77,14 @@ class _CreateCardWidgetState extends State<CreateCardWidget> {
               ElevatedButton(
                 onPressed: () async {
                   if (_selectedFile != null) {
-                    bool success = await _uploadFile(_selectedFile!);
-                    if (success) {
-                      _showDialog('Solicitação Aceita', 'Aguarde pela revisão de seus documentos.');
-                      Future.delayed(Duration(seconds: 4), () {
-                        Navigator.pop(context);
-                      });
+                    bool wantsToAddBalance = await _showAddBalanceDialog();
+                    if (wantsToAddBalance) {
+                      double? amount = await _showSaldoDialog();
+                      if (amount != null) {
+                        _sendRequest(amount);
+                      }
                     } else {
-                      _showDialog('Erro', 'Erro ao enviar arquivo.');
+                      _sendRequest(0.0);
                     }
                   } else {
                     _showDialog('Aviso', 'Por favor, selecione um arquivo PDF.');
@@ -193,29 +196,130 @@ class _CreateCardWidgetState extends State<CreateCardWidget> {
     }
   }
 
-  Future<bool> _uploadFile(PlatformFile file) async {
+  Future<bool> _showAddBalanceDialog() async {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Adicionar Saldo'),
+          content: const Text('Deseja adicionar saldo ao cartão?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Não'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: const Text('Sim'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    ).then((value) => value ?? false);
+  }
+
+  Future<double?> _showSaldoDialog() async {
+    return showDialog<double>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Valor do Saldo'),
+          content: TextField(
+            controller: _amountController,
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            decoration: InputDecoration(hintText: "Digite o valor a ser adicionado"),
+            style: TextStyle(color: Colors.black, fontSize: 18),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop(null);
+              },
+            ),
+            TextButton(
+              child: const Text('Enviar'),
+              onPressed: () {
+                double? valor = double.tryParse(_amountController.text);
+                if (valor != null) {
+                  Navigator.of(context).pop(valor);
+                } else {
+                  _showDialog('Erro', 'Por favor, insira um valor válido.');
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  
+  Future<void> _showQRCodeDialog(double valor) async {
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('QR Code para Adicionar Saldo'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/QRCode.png', // Caminho para o arquivo PNG dentro da pasta assets
+              height: 200,
+              width: 200,
+            ),
+            const SizedBox(height: 10),
+            const Text('Este QR Code será válido por 1 minuto.'),
+            const SizedBox(height: 10),
+            Text('Valor: R\$ ${valor.toStringAsFixed(2)}'),
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop(); // Fecha o diálogo
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+  Future<void> _sendRequest(double valor) async {
   final uri = Uri.parse('http://localhost:3000/solicitarCartao/${widget.idUser}');
   final request = http.MultipartRequest('POST', uri)
-    ..fields['tipo'] = tipo.toString() 
+    ..fields['tipo'] = tipo.toString()
+    ..fields['valor'] = valor.toString()
     ..files.add(
       http.MultipartFile.fromBytes(
         'file',
-        file.bytes!,
-        filename: file.name,
+        _selectedFile!.bytes!,
+        filename: _selectedFile!.name,
       ),
     );
 
   try {
     final response = await request.send();
-    if (response.statusCode == 201) { 
-      return true;
+    if (response.statusCode == 201) {
+      // Mostra o QR Code e aguarda o fechamento do diálogo
+      await _showQRCodeDialog(valor);
+
+      // Após o QR Code ser fechado, exibe a mensagem de Solicitação Aceita
+      _showDialog('Solicitação Aceita', 'Aguarde pela revisão de seus documentos.');
+      Future.delayed(Duration(seconds: 4), () {
+        Navigator.pop(context);
+      });
     } else {
-      print('Erro ao enviar arquivo. Status code: ${response.statusCode}');
-      return false;
+      _showDialog('Erro', 'Erro ao enviar arquivo. Status code: ${response.statusCode}');
     }
   } catch (e) {
-    print('Erro ao enviar arquivo: $e');
-    return false;
+    _showDialog('Erro', 'Erro ao enviar arquivo: $e');
   }
 }
 
