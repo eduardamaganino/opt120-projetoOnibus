@@ -109,41 +109,41 @@ class _NotificationsPageState extends State<NotificationsPage> {
   }
 
   Future<List<model.Notification>> _fetchNotifications(int userId) async {
-    try {
-      final response = await http.get(Uri.parse('http://localhost:3000/getAllNotifi'));
-      if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body) as List<dynamic>;
-        _notifications = jsonData.map((item) => model.Notification.fromJson(item)).toList();
+  try {
+    final response = await http.get(Uri.parse('http://localhost:3000/getNotificacaoByUserId/$userId'));
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body) as List<dynamic>;
+      _notifications = jsonData.map((item) => model.Notification.fromJson(item)).toList();
 
-        // Ordena as notificações para que as não lidas venham antes das lidas
-        _notifications!.sort((a, b) {
-          return a.isRead == b.isRead ? 0 : (a.isRead ? 1 : -1);
-        });
+      // Ordena as notificações para que as não lidas venham antes das lidas
+      _notifications!.sort((a, b) {
+        return a.isRead == b.isRead ? 0 : (a.isRead ? 1 : -1);
+      });
 
-        return _notifications!;
-      } else {
-        throw Exception('Falha ao carregar notificações');
-      }
-    } catch (e) {
-      print(e);
-      throw e;
+      return _notifications!;
+    } else {
+      // Se não há notificações, retorna uma lista vazia
+      return [];
     }
+  } catch (e) {
+    print(e);
+    throw Exception('Falha ao carregar notificações');
   }
+}
 
   Future<void> _markAsRead(int notificationId) async {
     try {
-      final response = await http.post(
-        Uri.parse('http://localhost:3000/updateNotificacaoStatus/$notificationId'),
+      final response = await http.put(
+        Uri.parse('http://localhost:3000/notificacoes/status/${widget.userId}'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'isRead': 1}),
+        body: jsonEncode({'notificationId': notificationId, 'isRead': 1}),
       );
+
       if (response.statusCode == 200) {
         setState(() {
-          // Atualiza o status da notificação na lista local
           final notification = _notifications!.firstWhere((n) => n.id == notificationId);
           notification.isRead = true;
 
-          // Reordena a lista para mover a notificação lida para o final
           _notifications!.sort((a, b) {
             return a.isRead == b.isRead ? 0 : (a.isRead ? 1 : -1);
           });
@@ -198,15 +198,21 @@ class _NotificationsPageState extends State<NotificationsPage> {
               return Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Erro ao carregar notificações'));
-            } else if (_notifications == null || _notifications!.isEmpty) {
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return Center(child: Text('Nenhuma notificação disponível'));
             } else {
               return ListView.builder(
-                itemCount: _notifications!.length,
+                itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
-                  final notification = _notifications![index];
+                  final notification = snapshot.data![index];
+
+                  // Cor da notificação marcada como lida: cinza apenas para usuários normais
+                  final cardColor = widget.isAdm
+                      ? Colors.white
+                      : (notification.isRead ? Colors.grey[200] : Colors.white); 
+
                   return Card(
-                    color: notification.isRead ? Colors.grey[200] : Colors.white,
+                    color: cardColor,
                     elevation: 5,
                     child: ListTile(
                       contentPadding: EdgeInsets.all(16.0),
@@ -214,10 +220,13 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         notification.text,
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      subtitle: Text(
-                        'Data: ${notification.date}\nStatus: ${notification.isRead ? 'Lida' : 'Não Lida'}',
-                        style: TextStyle(fontSize: 16),
-                      ),
+                      // Remover o campo "Status" para admins
+                      subtitle: widget.isAdm
+                          ? Text('Data: ${notification.date}', style: TextStyle(fontSize: 16))
+                          : Text(
+                              'Data: ${notification.date}\nStatus: ${notification.isRead ? 'Lida' : 'Não Lida'}',
+                              style: TextStyle(fontSize: 16),
+                            ),
                       trailing: widget.isAdm
                           ? IconButton(
                               icon: Icon(Icons.delete, color: Colors.red),
@@ -226,19 +235,24 @@ class _NotificationsPageState extends State<NotificationsPage> {
                               },
                             )
                           : null,
-                      leading: Checkbox(
-                        value: notification.isRead,
-                        onChanged: notification.isRead ? null : (bool? value) {
-                          if (value == true) {
-                            _markAsRead(notification.id);
-                            setState(() {
-                              notification.isRead = true;
-                            });
-                          }
-                        },
-                      ),
+                      // Remover a opção de marcar como lida para admins
+                      leading: !widget.isAdm
+                          ? Checkbox(
+                              value: notification.isRead,
+                              onChanged: notification.isRead
+                                  ? null
+                                  : (bool? value) {
+                                      if (value == true) {
+                                        _markAsRead(notification.id);
+                                        setState(() {
+                                          notification.isRead = true;
+                                        });
+                                      }
+                                    },
+                            )
+                          : null,
                       onTap: () {
-                        if (!notification.isRead) {
+                        if (!widget.isAdm && !notification.isRead) {
                           _markAsRead(notification.id);
                           setState(() {
                             notification.isRead = true;

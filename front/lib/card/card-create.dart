@@ -14,11 +14,10 @@ class CreateCardWidget extends StatefulWidget {
 }
 
 class _CreateCardWidgetState extends State<CreateCardWidget> {
-  int tipo = 1; // Tipo por padrão será "Normal"
+  String tipo = 'Normal'; // Tipo por padrão será "Normal"
   PlatformFile? _selectedFile;
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _valorController = TextEditingController(); // Controller para capturar o valor inserido
-
   
   @override
   Widget build(BuildContext context) {
@@ -55,7 +54,7 @@ class _CreateCardWidgetState extends State<CreateCardWidget> {
                 color: Colors.black,
               ),
               _buildCheckboxField(),
-              if (tipo == 2) // Mostrar instrução apenas se o tipo for Estudante
+              if (tipo == 'Estudante') // Mostrar instrução apenas se o tipo for Estudante
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 10.0),
                   child: Text(
@@ -64,7 +63,7 @@ class _CreateCardWidgetState extends State<CreateCardWidget> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-              if (tipo == 1 || tipo == 3) // Mostrar instrução para Normal e Idoso
+              if (tipo == 'Normal' || tipo == 'Idoso') // Mostrar instrução para Normal e Idoso
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 10.0),
                   child: Text(
@@ -113,24 +112,24 @@ class _CreateCardWidgetState extends State<CreateCardWidget> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        _buildCheckboxOption('Normal', 1),
-        _buildCheckboxOption('Estudante', 2),
-        _buildCheckboxOption('Idoso', 3),
+        _buildCheckboxOption('Normal'),
+        _buildCheckboxOption('Estudante'),
+        _buildCheckboxOption('Idoso'),
       ],
     );
   }
 
-  Widget _buildCheckboxOption(String title, int value) {
+  Widget _buildCheckboxOption(String title) {
     return ListTile(
       title: Text(
         title,
         style: const TextStyle(fontSize: 20, color: Colors.black),
       ),
-      leading: Radio<int>(
-        value: value,
+      leading: Radio<String>(
+        value: title,
         groupValue: tipo,
         activeColor: Colors.black,
-        onChanged: (int? selectedValue) {
+        onChanged: (String? selectedValue) {
           setState(() {
             tipo = selectedValue!;
           });
@@ -294,7 +293,7 @@ class _CreateCardWidgetState extends State<CreateCardWidget> {
   Future<void> _sendRequest(double valor) async {
   final uri = Uri.parse('http://localhost:3000/solicitarCartao/${widget.idUser}');
   final request = http.MultipartRequest('POST', uri)
-    ..fields['tipo'] = tipo.toString()
+    ..fields['tipo'] = tipo // Envia o nome do tipo de cartão
     ..fields['valor'] = valor.toString()
     ..files.add(
       http.MultipartFile.fromBytes(

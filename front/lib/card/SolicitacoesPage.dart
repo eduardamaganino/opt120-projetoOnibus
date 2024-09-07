@@ -50,7 +50,6 @@ class _SolicitacoesPageState extends State<SolicitacoesPage> {
 
       if (response.statusCode == 200) {
         _fetchSolicitacoesPendentes(); // Atualizar lista após aprovação/rejeição
-        print('Solicitação $status com sucesso.');
       } else {
         print('Erro ao processar solicitação: ${response.statusCode}');
         print('Resposta do servidor: ${response.body}');
@@ -70,6 +69,7 @@ class _SolicitacoesPageState extends State<SolicitacoesPage> {
           content: TextField(
             keyboardType: TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(hintText: "Digite o valor"),
+            style: TextStyle(color: Colors.black),
             onChanged: (text) {
               valor = double.tryParse(text);
             },
@@ -88,7 +88,7 @@ class _SolicitacoesPageState extends State<SolicitacoesPage> {
                   _aprovarSolicitacao(id, 'aprovado', valor);
                   Navigator.of(context).pop();
                 } else {
-                  // Handle the case where valor is not provided
+                  // Notifica valor em caso de valor inválido
                   print('Valor inválido');
                 }
               },

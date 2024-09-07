@@ -121,7 +121,6 @@ class _CardPageWidgetState extends State<CardPageWidget> {
       );
 
       if (response.statusCode == 200) {
-        print('Saldo adicionado com sucesso.');
         _fetchCardData();
       } else {
         print('Erro ao adicionar saldo: ${response.statusCode}');
@@ -264,7 +263,7 @@ class _CardPageWidgetState extends State<CardPageWidget> {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'Valor: R\$ ${cardData!['valor']}',
+                      'Saldo: R\$ ${cardData!['valor']}',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
