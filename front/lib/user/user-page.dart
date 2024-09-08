@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/user/user-edit.dart';
+import 'package:flutter_application_1/user/user-editsenha.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_application_1/card/card-create.dart';
@@ -99,6 +100,20 @@ class _UserPageWidgetState extends State<UserPageWidget> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => EditUserWidget(
+                                userId: _user!['id'],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      SizedBox(height: 30),
+                      _buildStyledButton(
+                        label: 'Editar Senha',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditSenhaUserWidget(
                                 userId: _user!['id'],
                               ),
                             ),
