@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/main.dart';
 import 'package:http/http.dart' as http;
-import 'user-login.dart';
+import '../main.dart';
 
 class EditUserWidget extends StatefulWidget {
   final int userId;
@@ -67,7 +68,7 @@ class _EditUserWidgetState extends State<EditUserWidget> {
                 if (title == 'Sucesso') {
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    MaterialPageRoute(builder: (context) => HomePage()),
                     (route) => false,
                   );
                 }

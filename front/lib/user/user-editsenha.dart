@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/main.dart';
 import 'package:http/http.dart' as http;
-import 'user-login.dart';
+import '../main.dart';
 
 class EditSenhaUserWidget extends StatefulWidget {
   final int userId;
@@ -37,7 +38,7 @@ class _EditSenhaUserWidgetState extends State<EditSenhaUserWidget> {
                 if (title == 'Sucesso') {
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    MaterialPageRoute(builder: (context) => HomePage()),
                     (route) => false,
                   );
                 }
@@ -119,7 +120,7 @@ class _EditSenhaUserWidgetState extends State<EditSenhaUserWidget> {
                     ),
                     const SizedBox(height: 15),
                     _buildPasswordField(
-                        'Senha Antiga',
+                        'Senha Atual',
                         (value) {
                           setState(() {
                             senhaAntiga = value;
