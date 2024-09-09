@@ -174,66 +174,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       throw e;
     }
   }
-
-  Future<void> _updateDebitValue(double newValue) async {
-    try {
-      final response = await http.put(
-        Uri.parse('http://localhost:3000/atualizarValorDebito'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'novoValor': newValue}),
-      );
-
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Valor de débito atualizado com sucesso')));
-      } else {
-        final errorData = jsonDecode(response.body);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorData['error'])));
-      }
-    } catch (e) {
-      print('Erro ao atualizar valor de débito: $e');
-      throw e;
-    }
-  }
-
-  void _showUpdateValueDialog() {
-    final TextEditingController _controller = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Alterar Valor de Débito'),
-          content: TextField(
-            controller: _controller,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(hintText: 'Novo valor'),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancelar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Salvar'),
-              onPressed: () {
-                final newValue = double.tryParse(_controller.text) ?? 0.0;
-                if (newValue > 0) {
-                  _updateDebitValue(newValue);
-                  Navigator.of(context).pop();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Por favor, insira um valor válido')),
-                  );
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -252,16 +193,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          children: [
-            if (widget.isAdm) // Exibe o botão apenas para administradores
-              ElevatedButton(
-                onPressed: _showUpdateValueDialog,
-                child: Text('Alterar Valor de Débito'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.amber,
-                  foregroundColor: Colors.black,
-                ),
-              ),
+          children: [             
             SizedBox(height: 16),
             Expanded(
               child: FutureBuilder<List<model.Notification>>(
