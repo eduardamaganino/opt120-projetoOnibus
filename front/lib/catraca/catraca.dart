@@ -34,7 +34,7 @@ class _CatracaWidgetState extends State<CatracaWidget> {
         },
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         // A operação de débito foi bem-sucedida
         _showAlertDialog('Sucesso', 'Débito realizado com sucesso!');
       } else {
