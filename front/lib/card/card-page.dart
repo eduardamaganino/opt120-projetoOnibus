@@ -4,6 +4,7 @@ import 'package:flutter_application_1/card/card-create.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:flutter_application_1/card/SolicitacoesPage.dart';
+import 'package:flutter_application_1/card/SolicitacoesPagamentoPage.dart';
 
 class CardPageWidget extends StatefulWidget {
   final int idUser;
@@ -156,15 +157,17 @@ class _CardPageWidgetState extends State<CardPageWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (widget.isAdm) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Gerenciar Solicitações'),
-          backgroundColor: Color(0xFFFFD700),
-        ),
-        body: Center(
-          child: ElevatedButton(
+Widget build(BuildContext context) {
+  if (widget.isAdm) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Gerenciar Solicitações'),
+        backgroundColor: Color(0xFFFFD700),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ElevatedButton(
             onPressed: () {
               Navigator.push(
                 context,
@@ -181,18 +184,41 @@ class _CardPageWidgetState extends State<CardPageWidget> {
               padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
             ),
             child: Text(
-              'Gerenciar Solicitações',
+              'Gerenciar Solicitações de Novos Cartões',
               style: TextStyle(color: Colors.black, fontSize: 18),
             ),
           ),
-        ),
-      );
-    } else {
-      return Scaffold(
-        body: _buildCardView(),
-      );
-    }
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SolicitacoesPagamentoPage(), // Novo Widget para solicitações de pagamento
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFFFFD700),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+            ),
+            child: Text(
+              'Gerenciar Solicitações de Pagamento',
+              style: TextStyle(color: Colors.black, fontSize: 18),
+            ),
+          ),
+        ],
+      ),
+    );
+  } else {
+    return Scaffold(
+      body: _buildCardView(),
+    );
   }
+}
 
   Widget _buildCardView() {
     if (cardData == null) {

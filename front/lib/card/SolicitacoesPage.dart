@@ -19,7 +19,7 @@ class _SolicitacoesPageState extends State<SolicitacoesPage> {
   Future<void> _fetchSolicitacoesPendentes() async {
     try {
       final response = await http.get(
-        Uri.parse('http://localhost:3000/solicitacoesPendentes'),
+        Uri.parse('http://localhost:3000/solicitacoesCartaoPendentes'),
       );
 
       if (response.statusCode == 200) {
