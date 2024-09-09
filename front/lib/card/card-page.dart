@@ -20,13 +20,13 @@ class _CardPageWidgetState extends State<CardPageWidget> {
   Map<String, dynamic>? cardData;
   List<dynamic> solicitacoes = [];
   final TextEditingController _valorController =
-      TextEditingController(); // Controller para capturar o valor inserido
+      TextEditingController();
 
   @override
   void initState() {
     super.initState();
     if (widget.isAdm) {
-      // Não buscar solicitações aqui, apenas exibir o botão
+      // exibir o botão
     } else {
       _fetchCardData();
     }
@@ -68,7 +68,7 @@ class _CardPageWidgetState extends State<CardPageWidget> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                _showQRCodeDialog(); // Mostrar o QR Code depois de inserir o valor
+                _showQRCodeDialog();
               },
               child: Text('Enviar'),
             ),
@@ -88,7 +88,7 @@ class _CardPageWidgetState extends State<CardPageWidget> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
-                'assets/QRCode.png', // Caminho para o arquivo PNG dentro da pasta assets
+                'assets/QRCode.png',
                 height: 200,
                 width: 200,
               ),
@@ -164,7 +164,8 @@ Widget build(BuildContext context) {
         title: Text('Gerenciar Solicitações'),
         backgroundColor: Color(0xFFFFD700),
       ),
-      body: Column(
+      body: Center(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ElevatedButton(
@@ -194,7 +195,7 @@ Widget build(BuildContext context) {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SolicitacoesPagamentoPage(), // Novo Widget para solicitações de pagamento
+                  builder: (context) => SolicitacoesPagamentoPage(),
                 ),
               );
             },
@@ -212,6 +213,7 @@ Widget build(BuildContext context) {
           ),
         ],
       ),
+      )
     );
   } else {
     return Scaffold(
@@ -225,7 +227,6 @@ Widget build(BuildContext context) {
       return Center(
         child: ElevatedButton(
           onPressed: () {
-            // Navegar para a página de solicitação de cartão
             Navigator.push(
               context,
               MaterialPageRoute(

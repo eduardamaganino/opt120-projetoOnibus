@@ -58,7 +58,7 @@ class _CreateUserWidgetState extends State<CreateUserWidget> {
                 });
               }, textFieldWidth: textFieldWidth),
               const SizedBox(height: 10),
-              _buildTextField('Cpf', (value) {
+              _buildTextField('CPF', (value) {
                 setState(() {
                   cpf = value;
                 });

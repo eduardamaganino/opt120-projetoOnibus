@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/main.dart';
 import 'package:flutter_application_1/user/user-create.dart';
-import 'package:flutter_application_1/catraca/catraca.dart'; // Importa o CatracaWidget
+import 'package:flutter_application_1/catraca/catraca.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
       final String token = responseData['token'];
       final int userId = responseData['id'];
       
-      final bool isAdm = responseData['is_adm'] == 1; // Assumindo que o valor retornado é um número (1 ou 0)
+      final bool isAdm = responseData['is_adm'] == 1;
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token);
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     double buttonWidth = 150.0;
-    double textFieldWidth = 600.0; // Defina a largura dos campos de texto
+    double textFieldWidth = 600.0;
 
     return Scaffold(
       appBar: AppBar(
@@ -100,10 +100,6 @@ class _LoginPageState extends State<LoginPage> {
         ),
         centerTitle: true,
         backgroundColor: const Color(0xFFFFD700),
-        leading: const Icon(
-          Icons.login,
-          color: Color.fromARGB(138, 0, 0, 0),
-        ),
       ),
       body: Container(
         decoration: const BoxDecoration(

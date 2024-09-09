@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/notification_model.dart' as model;
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class UserHomePageWidget extends StatefulWidget {
   final int userId;
@@ -115,14 +116,15 @@ class _NotificationsPageState extends State<NotificationsPage> {
         final jsonData = jsonDecode(response.body) as List<dynamic>;
         _notifications = jsonData.map((item) => model.Notification.fromJson(item)).toList();
 
-        // Ordena as notificações para que as não lidas venham antes das lidas
         _notifications!.sort((a, b) {
-          return a.isRead == b.isRead ? 0 : (a.isRead ? 1 : -1);
+          if (a.isRead != b.isRead) {
+          return a.isRead ? 1 : -1; 
+        }
+        return b.date.compareTo(a.date);
         });
 
         return _notifications!;
       } else {
-        // Se não há notificações, retorna uma lista vazia
         return [];
       }
     } catch (e) {
@@ -132,30 +134,33 @@ class _NotificationsPageState extends State<NotificationsPage> {
   }
 
   Future<void> _markAsRead(int notificationId) async {
-    try {
-      final response = await http.put(
-        Uri.parse('http://localhost:3000/notificacoes/status/${widget.userId}'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'notificationId': notificationId, 'isRead': 1}),
-      );
+  try {
+    final response = await http.put(
+      Uri.parse('http://localhost:3000/notificacoes/status/${widget.userId}'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'notificationId': notificationId, 'isRead': 1}),
+    );
 
-      if (response.statusCode == 200) {
-        setState(() {
-          final notification = _notifications!.firstWhere((n) => n.id == notificationId);
-          notification.isRead = true;
+    if (response.statusCode == 200) {
+      setState(() {
+        final notification = _notifications!.firstWhere((n) => n.id == notificationId);
+        notification.isRead = true;
 
-          _notifications!.sort((a, b) {
-            return a.isRead == b.isRead ? 0 : (a.isRead ? 1 : -1);
-          });
+        _notifications!.sort((a, b) {
+          if (a.isRead != b.isRead) {
+            return a.isRead ? 1 : -1;
+          }
+          return b.date.compareTo(a.date);
         });
-      } else {
-        throw Exception('Falha ao atualizar o status da notificação');
-      }
-    } catch (e) {
-      print(e);
-      throw e;
+      });
+    } else {
+      throw Exception('Falha ao atualizar o status da notificação');
     }
+  } catch (e) {
+    print(e);
+    throw e;
   }
+}
 
   Future<void> _deleteNotification(int notificationId) async {
     try {
@@ -174,7 +179,15 @@ class _NotificationsPageState extends State<NotificationsPage> {
       throw e;
     }
   }
-  
+
+  String _formatDate(String dateString) {
+  final DateTime dateTime = DateTime.parse(dateString);
+  final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+  final DateFormat timeFormat = DateFormat('HH:mm:ss');
+  final String formattedDate = dateFormat.format(dateTime);
+  final String formattedTime = timeFormat.format(dateTime);
+  return 'Data: $formattedDate\nHorário: $formattedTime';
+}
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +224,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       itemBuilder: (context, index) {
                         final notification = snapshot.data![index];
 
-                        // Cor da notificação marcada como lida: cinza apenas para usuários normais
                         final cardColor = widget.isAdm
                             ? Colors.white
                             : (notification.isRead ? Colors.grey[200] : Colors.white);
@@ -225,11 +237,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
                               notification.text,
                               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
-                            // Remover o campo "Status" para admins
                             subtitle: widget.isAdm
-                                ? Text('Data: ${notification.date}', style: TextStyle(fontSize: 16))
+                                ? Text(_formatDate(notification.date), style: TextStyle(fontSize: 16))
                                 : Text(
-                                    'Data: ${notification.date}\nStatus: ${notification.isRead ? 'Lida' : 'Não Lida'}',
+                                    '${_formatDate(notification.date)}\nStatus: ${notification.isRead ? 'Lida' : 'Não Lida'}',
                                     style: TextStyle(fontSize: 16),
                                   ),
                             trailing: widget.isAdm
@@ -240,7 +251,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                     },
                                   )
                                 : null,
-                            // Remover a opção de marcar como lida para admins
                             leading: !widget.isAdm
                                 ? Checkbox(
                                     value: notification.isRead,

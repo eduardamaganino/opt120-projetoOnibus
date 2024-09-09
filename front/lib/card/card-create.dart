@@ -6,7 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 
 class CreateCardWidget extends StatefulWidget {
-  final int idUser; // ID do usuário logado
+  final int idUser;
   CreateCardWidget({required this.idUser});
 
   @override
@@ -14,10 +14,10 @@ class CreateCardWidget extends StatefulWidget {
 }
 
 class _CreateCardWidgetState extends State<CreateCardWidget> {
-  String tipo = 'Normal'; // Tipo por padrão será "Normal"
+  String tipo = 'Normal';
   PlatformFile? _selectedFile;
   final TextEditingController _amountController = TextEditingController();
-  final TextEditingController _valorController = TextEditingController(); // Controller para capturar o valor inserido
+  final TextEditingController _valorController = TextEditingController();
   
   @override
   Widget build(BuildContext context) {
@@ -54,7 +54,7 @@ class _CreateCardWidgetState extends State<CreateCardWidget> {
                 color: Colors.black,
               ),
               _buildCheckboxField(),
-              if (tipo == 'Estudante') // Mostrar instrução apenas se o tipo for Estudante
+              if (tipo == 'Estudante')
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 10.0),
                   child: Text(
@@ -63,7 +63,7 @@ class _CreateCardWidgetState extends State<CreateCardWidget> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-              if (tipo == 'Normal' || tipo == 'Idoso') // Mostrar instrução para Normal e Idoso
+              if (tipo == 'Normal' || tipo == 'Idoso')
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 10.0),
                   child: Text(
@@ -267,7 +267,7 @@ class _CreateCardWidgetState extends State<CreateCardWidget> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(
-              'assets/QRCode.png', // Caminho para o arquivo PNG dentro da pasta assets
+              'assets/QRCode.png',
               height: 200,
               width: 200,
             ),
@@ -281,7 +281,7 @@ class _CreateCardWidgetState extends State<CreateCardWidget> {
           TextButton(
             child: const Text('OK'),
             onPressed: () {
-              Navigator.of(context).pop(); // Fecha o diálogo
+              Navigator.of(context).pop();
             },
           ),
         ],
@@ -293,7 +293,7 @@ class _CreateCardWidgetState extends State<CreateCardWidget> {
   Future<void> _sendRequest(double valor) async {
   final uri = Uri.parse('http://localhost:3000/solicitarCartao/${widget.idUser}');
   final request = http.MultipartRequest('POST', uri)
-    ..fields['tipo'] = tipo // Envia o nome do tipo de cartão
+    ..fields['tipo'] = tipo
     ..fields['valor'] = valor.toString()
     ..files.add(
       http.MultipartFile.fromBytes(
@@ -306,10 +306,8 @@ class _CreateCardWidgetState extends State<CreateCardWidget> {
   try {
     final response = await request.send();
     if (response.statusCode == 201) {
-      // Mostra o QR Code e aguarda o fechamento do diálogo
       await _showQRCodeDialog(valor);
 
-      // Após o QR Code ser fechado, exibe a mensagem de Solicitação Aceita
       _showDialog('Solicitação Aceita', 'Aguarde pela revisão de seus documentos.');
       Future.delayed(Duration(seconds: 4), () {
         Navigator.pop(context);
