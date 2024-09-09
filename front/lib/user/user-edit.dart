@@ -13,11 +13,9 @@ class EditUserWidget extends StatefulWidget {
 }
 
 class _EditUserWidgetState extends State<EditUserWidget> {
-  String nome = '';
-  String cpf = '';
-  String email = '';
-  String senha = '';
-  String telefone = '';
+  TextEditingController nomeController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController telefoneController = TextEditingController();
   bool isLoading = true;
 
   @override
@@ -35,10 +33,10 @@ class _EditUserWidgetState extends State<EditUserWidget> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
-          nome = data['nome'];
-          cpf = data['cpf'];
-          email = data['email'];
-          telefone = data['telefone'];
+          // Garantir que não haja valores nulos
+          nomeController.text = data['nome'] ?? '';
+          emailController.text = data['email'] ?? '';
+          telefoneController.text = data['telefone'] ?? '';
           isLoading = false;
         });
       } else {
@@ -118,35 +116,11 @@ class _EditUserWidgetState extends State<EditUserWidget> {
                       color: Colors.black,
                     ),
                     const SizedBox(height: 15),
-                    _buildTextField('Nome', nome, (value) {
-                      setState(() {
-                        nome = value;
-                      });
-                    }),
+                    _buildTextField('Nome', nomeController),
                     const SizedBox(height: 8),
-                    _buildTextField('Cpf', cpf, (value) {
-                      setState(() {
-                        cpf = value;
-                      });
-                    }),
+                    _buildTextField('Email', emailController),
                     const SizedBox(height: 8),
-                    _buildTextField('Email', email, (value) {
-                      setState(() {
-                        email = value;
-                      });
-                    }),
-                    const SizedBox(height: 8),
-                    _buildTextField('Senha', senha, (value) {
-                      setState(() {
-                        senha = value;
-                      });
-                    }, obscureText: true),
-                    const SizedBox(height: 8),
-                    _buildTextField('Telefone', telefone, (value) {
-                      setState(() {
-                        telefone = value;
-                      });
-                    }),
+                    _buildTextField('Telefone', telefoneController),
                     const SizedBox(height: 30),
                     SizedBox(
                       width: double.infinity, // Makes the button full-width
@@ -159,11 +133,9 @@ class _EditUserWidgetState extends State<EditUserWidget> {
                               'Content-Type': 'application/json; charset=UTF-8',
                             },
                             body: jsonEncode(<String, String>{
-                              'nome': nome,
-                              'cpf': cpf,
-                              'email': email,
-                              'senha': senha,
-                              'telefone': telefone,
+                              'nome': nomeController.text,
+                              'email': emailController.text,
+                              'telefone': telefoneController.text,
                             }),
                           );
 
@@ -194,10 +166,10 @@ class _EditUserWidgetState extends State<EditUserWidget> {
     );
   }
 
-  Widget _buildTextField(String hintText, String initialValue,
-      Function(String) onChanged,
+  Widget _buildTextField(String hintText, TextEditingController controller,
       {bool obscureText = false}) {
     return TextField(
+      controller: controller,
       obscureText: obscureText,
       style: const TextStyle(color: Colors.black),
       decoration: InputDecoration(
@@ -208,8 +180,6 @@ class _EditUserWidgetState extends State<EditUserWidget> {
         filled: true,
         fillColor: Colors.transparent,
       ),
-      controller: TextEditingController(text: initialValue),
-      onChanged: onChanged,
     );
   }
 }
