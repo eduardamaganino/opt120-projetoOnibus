@@ -14,7 +14,8 @@ class EditSenhaUserWidget extends StatefulWidget {
 
 class _EditSenhaUserWidgetState extends State<EditSenhaUserWidget> {
   String senhaAntiga = '';
-  String senhaNova = '';
+  String senhaNova1 = '';
+  String senhaNova2 = '';
   bool isLoading = false;
   double textFieldWidth = 600.0; // Define a largura dos campos de texto
 
@@ -61,7 +62,8 @@ class _EditSenhaUserWidgetState extends State<EditSenhaUserWidget> {
       },
       body: jsonEncode(<String, String>{
         'senhaAntiga': senhaAntiga,
-        'senhaNova': senhaNova,
+        'senhaNova1': senhaNova1,
+        'senhaNova2': senhaNova2,
       }),
     );
 
@@ -73,6 +75,8 @@ class _EditSenhaUserWidgetState extends State<EditSenhaUserWidget> {
       _showMessage('Sucesso', 'Senha alterada com sucesso!');
     } else if (response.statusCode == 401) {
       _showMessage('Erro', 'Senha antiga está incorreta!');
+    } else if (response.statusCode == 400) {
+      _showMessage('Erro', 'As novas senhas não se coincidem!');
     } else {
       _showMessage('Erro', 'Falha ao alterar a senha');
     }
@@ -134,7 +138,23 @@ class _EditSenhaUserWidgetState extends State<EditSenhaUserWidget> {
                         'Senha Nova',
                         (value) {
                           setState(() {
-                            senhaNova = value;
+                            senhaNova1 = value;
+                          });
+                        },
+                        obscureText:
+                            !_isNewPasswordVisible, // Controla a visibilidade
+                        onVisibilityToggle: () {
+                          setState(() {
+                            _isNewPasswordVisible = !_isNewPasswordVisible;
+                          });
+                        },
+                        isVisible: _isNewPasswordVisible),
+                    const SizedBox(height: 8),
+                    _buildPasswordField(
+                        'Digite a Nova Senha Novamente',
+                        (value) {
+                          setState(() {
+                            senhaNova2 = value;
                           });
                         },
                         obscureText:
